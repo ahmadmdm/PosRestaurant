@@ -1,0 +1,56 @@
+{
+ "actions": [],
+ "creation": "2026-01-01 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "modifier",
+  "is_required",
+  "min_selections",
+  "max_selections"
+ ],
+ "fields": [
+  {
+   "fieldname": "modifier",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Modifier",
+   "options": "Menu Item Modifier",
+   "reqd": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "is_required",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Required"
+  },
+  {
+   "default": "0",
+   "fieldname": "min_selections",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Min Selections"
+  },
+  {
+   "default": "0",
+   "description": "0 = unlimited",
+   "fieldname": "max_selections",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Max Selections"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-01-01 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Restaurant Pos",
+ "name": "Menu Item Modifier Link",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

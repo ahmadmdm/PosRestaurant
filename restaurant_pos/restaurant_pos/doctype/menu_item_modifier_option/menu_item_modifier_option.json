@@ -1,0 +1,53 @@
+{
+ "actions": [],
+ "creation": "2026-01-01 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "option_name",
+  "option_name_ar",
+  "additional_price",
+  "is_default"
+ ],
+ "fields": [
+  {
+   "fieldname": "option_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Option Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "option_name_ar",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Option Name (Arabic)"
+  },
+  {
+   "default": "0",
+   "fieldname": "additional_price",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Additional Price"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_default",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Default Selection"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-01-01 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Restaurant Pos",
+ "name": "Menu Item Modifier Option",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

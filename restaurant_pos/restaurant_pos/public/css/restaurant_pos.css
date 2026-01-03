@@ -1,0 +1,362 @@
+/**
+ * Restaurant POS - Main Desk Styles
+ * Styles for the desk/admin interface
+ */
+
+/* Order Status Badges */
+.order-status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.order-status-badge.pending {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.order-status-badge.confirmed {
+    background-color: #cce5ff;
+    color: #004085;
+}
+
+.order-status-badge.preparing {
+    background-color: #ffe4c4;
+    color: #d45500;
+}
+
+.order-status-badge.ready {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.order-status-badge.served {
+    background-color: #e2e3e5;
+    color: #383d41;
+}
+
+.order-status-badge.paid {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.order-status-badge.cancelled {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+/* Table Status Indicators */
+.table-status-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 6px;
+}
+
+.table-status-indicator.available {
+    background-color: #28a745;
+}
+
+.table-status-indicator.occupied {
+    background-color: #dc3545;
+}
+
+.table-status-indicator.reserved {
+    background-color: #ffc107;
+}
+
+.table-status-indicator.cleaning {
+    background-color: #17a2b8;
+}
+
+/* Kitchen Order Cards */
+.kitchen-order-card {
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+    background: #fff;
+    transition: all 0.3s ease;
+}
+
+.kitchen-order-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.kitchen-order-card.urgent {
+    border-color: #dc3545;
+    background: linear-gradient(to right, #fff, #fff5f5);
+}
+
+.kitchen-order-card.rush {
+    border-color: #ffc107;
+    background: linear-gradient(to right, #fff, #fffdf5);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 0 10px rgba(255, 193, 7, 0);
+    }
+}
+
+/* Table Layout Grid */
+.restaurant-floor-plan {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 16px;
+    padding: 16px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    min-height: 400px;
+}
+
+.floor-plan-table {
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 600;
+}
+
+.floor-plan-table:hover {
+    transform: scale(1.05);
+}
+
+.floor-plan-table.available {
+    background: linear-gradient(135deg, #d4edda, #c3e6cb);
+    border: 2px solid #28a745;
+    color: #155724;
+}
+
+.floor-plan-table.occupied {
+    background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+    border: 2px solid #dc3545;
+    color: #721c24;
+}
+
+.floor-plan-table.reserved {
+    background: linear-gradient(135deg, #fff3cd, #ffeeba);
+    border: 2px solid #ffc107;
+    color: #856404;
+}
+
+/* Menu Item Cards */
+.menu-item-card {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+.menu-item-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.menu-item-card img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+
+.menu-item-card .card-body {
+    padding: 12px;
+}
+
+.menu-item-card .item-price {
+    font-size: 18px;
+    font-weight: 700;
+    color: #28a745;
+}
+
+/* Dietary Labels */
+.dietary-label {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    margin-right: 4px;
+}
+
+.dietary-label.vegetarian {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.dietary-label.vegan {
+    background-color: #c3e6cb;
+    color: #155724;
+}
+
+.dietary-label.halal {
+    background-color: #cce5ff;
+    color: #004085;
+}
+
+.dietary-label.gluten-free {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+/* Timer/Wait Time Display */
+.wait-time-display {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 14px;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.wait-time-display.normal {
+    background: #e2e3e5;
+    color: #383d41;
+}
+
+.wait-time-display.warning {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.wait-time-display.danger {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* Notification Badges */
+.restaurant-notification-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    min-width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    background: #dc3545;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-4px);
+    }
+}
+
+/* Order Timeline */
+.order-timeline {
+    position: relative;
+    padding-left: 30px;
+}
+
+.order-timeline::before {
+    content: '';
+    position: absolute;
+    left: 10px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #dee2e6;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 16px;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -24px;
+    top: 4px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #6c757d;
+    border: 2px solid #fff;
+}
+
+.timeline-item.completed::before {
+    background: #28a745;
+}
+
+.timeline-item.current::before {
+    background: #007bff;
+    animation: pulse 1.5s infinite;
+}
+
+/* Quick Actions */
+.quick-action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.quick-action-btn:hover {
+    transform: scale(1.1);
+}
+
+.quick-action-btn.print {
+    background: #17a2b8;
+    color: #fff;
+}
+
+.quick-action-btn.edit {
+    background: #ffc107;
+    color: #000;
+}
+
+.quick-action-btn.delete {
+    background: #dc3545;
+    color: #fff;
+}
+
+/* RTL Support */
+[dir="rtl"] .order-timeline {
+    padding-left: 0;
+    padding-right: 30px;
+}
+
+[dir="rtl"] .order-timeline::before {
+    left: auto;
+    right: 10px;
+}
+
+[dir="rtl"] .timeline-item::before {
+    left: auto;
+    right: -24px;
+}
+
+/* Print Styles */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+    
+    .kitchen-order-card {
+        break-inside: avoid;
+    }
+}

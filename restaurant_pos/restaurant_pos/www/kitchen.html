@@ -1,0 +1,75 @@
+{% extends "templates/web.html" %}
+{% block title %}{{ _("Kitchen Display") }}{% endblock %}
+
+{% block head_include %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/assets/restaurant_pos/css/kitchen_display.css">
+{% endblock %}
+
+{% block page_content %}
+<div id="kds-app" data-station="{{ station or '' }}" data-branch="{{ branch or '' }}">
+    <!-- Header -->
+    <header class="kds-header">
+        <div class="header-left">
+            <h1 class="kds-title">
+                <i class="fa fa-fire"></i>
+                {{ _("Kitchen Display") }}
+            </h1>
+            <div class="station-info" id="station-info">
+                {{ station_name or _("All Stations") }}
+            </div>
+        </div>
+        <div class="header-center">
+            <div class="stats-bar">
+                <div class="stat-item stat-new">
+                    <span class="stat-value" id="stat-new">0</span>
+                    <span class="stat-label">{{ _("New") }}</span>
+                </div>
+                <div class="stat-item stat-preparing">
+                    <span class="stat-value" id="stat-preparing">0</span>
+                    <span class="stat-label">{{ _("Preparing") }}</span>
+                </div>
+                <div class="stat-item stat-ready">
+                    <span class="stat-value" id="stat-ready">0</span>
+                    <span class="stat-label">{{ _("Ready") }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="clock" id="clock">00:00:00</div>
+            <button class="btn-settings" id="btn-settings" title="{{ _('Settings') }}">
+                <i class="fa fa-cog"></i>
+            </button>
+            <button class="btn-fullscreen" id="btn-fullscreen" title="{{ _('Fullscreen') }}">
+                <i class="fa fa-expand"></i>
+            </button>
+        </div>
+    </header>
+    
+    <!-- Orders Grid -->
+    <main class="kds-main">
+        <div class="orders-grid" id="orders-grid">
+            <!-- Orders will be loaded dynamically -->
+        </div>
+        
+        <!-- Empty State -->
+        <div class="empty-state" id="empty-state" style="display: none;">
+            <i class="fa fa-check-circle"></i>
+            <h2>{{ _("All Caught Up!") }}</h2>
+            <p>{{ _("No pending orders at the moment") }}</p>
+        </div>
+    </main>
+    
+    <!-- Audio Elements -->
+    <audio id="sound-new-order" preload="auto">
+        <source src="/assets/restaurant_pos/sounds/new-order.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="sound-alert" preload="auto">
+        <source src="/assets/restaurant_pos/sounds/alert.mp3" type="audio/mpeg">
+    </audio>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="/assets/restaurant_pos/js/kitchen_display.js"></script>
+{% endblock %}

@@ -1,0 +1,199 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:table_number",
+ "creation": "2026-01-01 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "table_number",
+  "branch",
+  "column_break_main",
+  "capacity",
+  "location",
+  "status_section",
+  "status",
+  "current_order",
+  "current_session",
+  "column_break_status",
+  "assigned_waiter",
+  "floor_position_section",
+  "position_x",
+  "position_y",
+  "column_break_floor",
+  "shape",
+  "rotation",
+  "qr_code_section",
+  "qr_code_id",
+  "qr_code_image"
+ ],
+ "fields": [
+  {
+   "fieldname": "table_number",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Table Number",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Branch",
+   "options": "Branch",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_main",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "4",
+   "fieldname": "capacity",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Capacity"
+  },
+  {
+   "default": "Indoor",
+   "fieldname": "location",
+   "fieldtype": "Select",
+   "in_standard_filter": 1,
+   "label": "Location",
+   "options": "Indoor\nOutdoor\nTerrace\nPrivate Room\nBar\nPoolside"
+  },
+  {
+   "fieldname": "status_section",
+   "fieldtype": "Section Break",
+   "label": "Status"
+  },
+  {
+   "default": "Available",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Available\nOccupied\nReserved\nCleaning\nUnavailable"
+  },
+  {
+   "fieldname": "current_order",
+   "fieldtype": "Link",
+   "label": "Current Order",
+   "options": "Restaurant Order",
+   "read_only": 1
+  },
+  {
+   "fieldname": "current_session",
+   "fieldtype": "Link",
+   "label": "Current Session",
+   "options": "Table Session",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_status",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "assigned_waiter",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Assigned Waiter",
+   "options": "User"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "floor_position_section",
+   "fieldtype": "Section Break",
+   "label": "Floor Position"
+  },
+  {
+   "default": "0",
+   "description": "X position on floor plan",
+   "fieldname": "position_x",
+   "fieldtype": "Int",
+   "label": "Position X"
+  },
+  {
+   "default": "0",
+   "description": "Y position on floor plan",
+   "fieldname": "position_y",
+   "fieldtype": "Int",
+   "label": "Position Y"
+  },
+  {
+   "fieldname": "column_break_floor",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Rectangle",
+   "fieldname": "shape",
+   "fieldtype": "Select",
+   "label": "Shape",
+   "options": "Rectangle\nSquare\nRound\nOval"
+  },
+  {
+   "default": "0",
+   "fieldname": "rotation",
+   "fieldtype": "Int",
+   "label": "Rotation (degrees)"
+  },
+  {
+   "fieldname": "qr_code_section",
+   "fieldtype": "Section Break",
+   "label": "QR Code"
+  },
+  {
+   "fieldname": "qr_code_id",
+   "fieldtype": "Data",
+   "label": "QR Code ID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "qr_code_image",
+   "fieldtype": "Attach Image",
+   "label": "QR Code Image",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-01-01 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Restaurant Pos",
+ "name": "Restaurant Table",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "read": 1,
+   "role": "Restaurant Manager",
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "Waiter",
+   "write": 1
+  }
+ ],
+ "search_fields": "table_number, branch, status",
+ "sort_field": "table_number",
+ "sort_order": "ASC",
+ "track_changes": 1
+}

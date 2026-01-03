@@ -1,0 +1,377 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "naming_series:",
+ "creation": "2026-01-01 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "item_name",
+  "item_name_ar",
+  "item_code",
+  "column_break_main",
+  "category",
+  "kitchen_station",
+  "is_active",
+  "display_order",
+  "pricing_section",
+  "price",
+  "discounted_price",
+  "column_break_pricing",
+  "tax_template",
+  "linked_item",
+  "details_section",
+  "description",
+  "description_ar",
+  "column_break_desc",
+  "image",
+  "thumbnail",
+  "nutrition_section",
+  "calories",
+  "protein",
+  "carbs",
+  "fat",
+  "column_break_nutrition",
+  "allergens",
+  "dietary_tags",
+  "customization_section",
+  "allow_customization",
+  "modifiers",
+  "availability_section",
+  "available_from",
+  "available_to",
+  "available_days",
+  "column_break_avail",
+  "is_sold_out",
+  "sold_out_until",
+  "inventory_section",
+  "track_inventory",
+  "bom",
+  "column_break_inv",
+  "available_qty",
+  "low_stock_threshold",
+  "preparation_section",
+  "preparation_time",
+  "spicy_level"
+ ],
+ "fields": [
+  {
+   "default": "ITEM-.####",
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Naming Series",
+   "options": "ITEM-.####"
+  },
+  {
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Item Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "item_name_ar",
+   "fieldtype": "Data",
+   "label": "Item Name (Arabic)"
+  },
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Data",
+   "label": "Item Code",
+   "unique": 1
+  },
+  {
+   "fieldname": "column_break_main",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "category",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Category",
+   "options": "Menu Category",
+   "reqd": 1
+  },
+  {
+   "fieldname": "kitchen_station",
+   "fieldtype": "Link",
+   "label": "Kitchen Station",
+   "options": "Kitchen Station"
+  },
+  {
+   "default": "1",
+   "fieldname": "is_active",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Active"
+  },
+  {
+   "default": "0",
+   "fieldname": "display_order",
+   "fieldtype": "Int",
+   "label": "Display Order"
+  },
+  {
+   "fieldname": "pricing_section",
+   "fieldtype": "Section Break",
+   "label": "Pricing"
+  },
+  {
+   "fieldname": "price",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Price",
+   "reqd": 1
+  },
+  {
+   "fieldname": "discounted_price",
+   "fieldtype": "Currency",
+   "label": "Discounted Price"
+  },
+  {
+   "fieldname": "column_break_pricing",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "tax_template",
+   "fieldtype": "Link",
+   "label": "Tax Template",
+   "options": "Item Tax Template"
+  },
+  {
+   "description": "Link to ERPNext Item for inventory tracking",
+   "fieldname": "linked_item",
+   "fieldtype": "Link",
+   "label": "Linked Item",
+   "options": "Item"
+  },
+  {
+   "fieldname": "details_section",
+   "fieldtype": "Section Break",
+   "label": "Details"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Text Editor",
+   "label": "Description"
+  },
+  {
+   "fieldname": "description_ar",
+   "fieldtype": "Text Editor",
+   "label": "Description (Arabic)"
+  },
+  {
+   "fieldname": "column_break_desc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "image",
+   "fieldtype": "Attach Image",
+   "label": "Image"
+  },
+  {
+   "fieldname": "thumbnail",
+   "fieldtype": "Attach Image",
+   "label": "Thumbnail"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "nutrition_section",
+   "fieldtype": "Section Break",
+   "label": "Nutrition Information"
+  },
+  {
+   "fieldname": "calories",
+   "fieldtype": "Int",
+   "label": "Calories (kcal)"
+  },
+  {
+   "fieldname": "protein",
+   "fieldtype": "Float",
+   "label": "Protein (g)"
+  },
+  {
+   "fieldname": "carbs",
+   "fieldtype": "Float",
+   "label": "Carbohydrates (g)"
+  },
+  {
+   "fieldname": "fat",
+   "fieldtype": "Float",
+   "label": "Fat (g)"
+  },
+  {
+   "fieldname": "column_break_nutrition",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "allergens",
+   "fieldtype": "Table MultiSelect",
+   "label": "Allergens",
+   "options": "Menu Item Allergen"
+  },
+  {
+   "fieldname": "dietary_tags",
+   "fieldtype": "Table MultiSelect",
+   "label": "Dietary Tags",
+   "options": "Menu Item Tag"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "customization_section",
+   "fieldtype": "Section Break",
+   "label": "Customization"
+  },
+  {
+   "default": "0",
+   "fieldname": "allow_customization",
+   "fieldtype": "Check",
+   "label": "Allow Customization"
+  },
+  {
+   "depends_on": "allow_customization",
+   "fieldname": "modifiers",
+   "fieldtype": "Table",
+   "label": "Modifiers",
+   "options": "Menu Item Modifier Link"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "availability_section",
+   "fieldtype": "Section Break",
+   "label": "Availability"
+  },
+  {
+   "fieldname": "available_from",
+   "fieldtype": "Time",
+   "label": "Available From"
+  },
+  {
+   "fieldname": "available_to",
+   "fieldtype": "Time",
+   "label": "Available To"
+  },
+  {
+   "fieldname": "available_days",
+   "fieldtype": "Table MultiSelect",
+   "label": "Available Days",
+   "options": "Available Day"
+  },
+  {
+   "fieldname": "column_break_avail",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_sold_out",
+   "fieldtype": "Check",
+   "label": "Sold Out"
+  },
+  {
+   "depends_on": "is_sold_out",
+   "fieldname": "sold_out_until",
+   "fieldtype": "Datetime",
+   "label": "Sold Out Until"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "inventory_section",
+   "fieldtype": "Section Break",
+   "label": "Inventory"
+  },
+  {
+   "default": "0",
+   "fieldname": "track_inventory",
+   "fieldtype": "Check",
+   "label": "Track Inventory"
+  },
+  {
+   "depends_on": "track_inventory",
+   "description": "Bill of Materials for recipe ingredients",
+   "fieldname": "bom",
+   "fieldtype": "Link",
+   "label": "Recipe BOM",
+   "options": "BOM"
+  },
+  {
+   "fieldname": "column_break_inv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "track_inventory",
+   "fieldname": "available_qty",
+   "fieldtype": "Float",
+   "label": "Available Quantity",
+   "read_only": 1
+  },
+  {
+   "depends_on": "track_inventory",
+   "default": "5",
+   "fieldname": "low_stock_threshold",
+   "fieldtype": "Int",
+   "label": "Low Stock Threshold"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "preparation_section",
+   "fieldtype": "Section Break",
+   "label": "Preparation"
+  },
+  {
+   "description": "Estimated preparation time in minutes",
+   "fieldname": "preparation_time",
+   "fieldtype": "Int",
+   "label": "Preparation Time (min)"
+  },
+  {
+   "default": "0",
+   "fieldname": "spicy_level",
+   "fieldtype": "Select",
+   "label": "Spicy Level",
+   "options": "0\n1\n2\n3\n4\n5"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-01-01 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Restaurant Pos",
+ "name": "Menu Item",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "read": 1,
+   "role": "Restaurant Manager",
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "Kitchen Staff"
+  }
+ ],
+ "search_fields": "item_name, item_name_ar, item_code",
+ "show_title_field_in_link": 1,
+ "sort_field": "display_order",
+ "sort_order": "ASC",
+ "title_field": "item_name",
+ "track_changes": 1
+}

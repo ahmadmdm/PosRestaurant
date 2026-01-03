@@ -1,0 +1,161 @@
+{% extends "templates/web.html" %}
+{% block title %}{{ _("Digital Menu") }}{% endblock %}
+
+{% block head_include %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link rel="stylesheet" href="/assets/restaurant_pos/css/digital_menu.css">
+{% endblock %}
+
+{% block page_content %}
+<div id="digital-menu-app" data-table="{{ table_id or '' }}" data-lang="{{ lang or 'en' }}">
+    <!-- Loading Screen -->
+    <div id="menu-loading" class="menu-loading">
+        <div class="loading-spinner"></div>
+        <p>{{ _("Loading Menu...") }}</p>
+    </div>
+    
+    <!-- Main App Container -->
+    <div id="menu-container" class="menu-container" style="display: none;">
+        <!-- Header -->
+        <header class="menu-header">
+            <div class="header-content">
+                <div class="restaurant-info">
+                    <img src="/assets/restaurant_pos/images/logo.png" alt="Logo" class="restaurant-logo" id="restaurant-logo">
+                    <div class="restaurant-details">
+                        <h1 class="restaurant-name" id="restaurant-name">Restaurant</h1>
+                        <p class="table-info" id="table-info"></p>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-icon" id="btn-language" title="{{ _('Change Language') }}">
+                        <i class="fa fa-language"></i>
+                    </button>
+                    <button class="btn-icon btn-cart" id="btn-cart" title="{{ _('View Cart') }}">
+                        <i class="fa fa-shopping-cart"></i>
+                        <span class="cart-badge" id="cart-badge">0</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Search Bar -->
+            <div class="search-container">
+                <input type="text" id="menu-search" class="search-input" 
+                       placeholder="{{ _('Search menu...') }}" autocomplete="off">
+                <i class="fa fa-search search-icon"></i>
+            </div>
+        </header>
+        
+        <!-- Categories Navigation -->
+        <nav class="categories-nav" id="categories-nav">
+            <div class="categories-scroll">
+                <!-- Categories will be loaded dynamically -->
+            </div>
+        </nav>
+        
+        <!-- Menu Items -->
+        <main class="menu-content" id="menu-content">
+            <!-- Items will be loaded dynamically -->
+        </main>
+        
+        <!-- Cart Panel -->
+        <div class="cart-panel" id="cart-panel">
+            <div class="cart-header">
+                <h2>{{ _("Your Order") }}</h2>
+                <button class="btn-close" id="btn-close-cart">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+            <div class="cart-items" id="cart-items">
+                <!-- Cart items will be loaded dynamically -->
+            </div>
+            <div class="cart-footer">
+                <div class="cart-totals">
+                    <div class="total-row">
+                        <span>{{ _("Subtotal") }}</span>
+                        <span id="cart-subtotal">0.00</span>
+                    </div>
+                    <div class="total-row total-grand">
+                        <span>{{ _("Total") }}</span>
+                        <span id="cart-total">0.00</span>
+                    </div>
+                </div>
+                <button class="btn-primary btn-checkout" id="btn-checkout" disabled>
+                    {{ _("Place Order") }}
+                </button>
+            </div>
+        </div>
+        
+        <!-- Item Detail Modal -->
+        <div class="modal" id="item-modal">
+            <div class="modal-overlay"></div>
+            <div class="modal-content">
+                <button class="btn-close modal-close" id="btn-close-modal">
+                    <i class="fa fa-times"></i>
+                </button>
+                <div class="modal-body">
+                    <div class="item-image-container">
+                        <img src="" alt="" class="item-image" id="modal-item-image">
+                    </div>
+                    <div class="item-details">
+                        <h2 class="item-name" id="modal-item-name"></h2>
+                        <p class="item-description" id="modal-item-description"></p>
+                        <div class="item-meta">
+                            <span class="item-price" id="modal-item-price"></span>
+                            <span class="item-calories" id="modal-item-calories"></span>
+                        </div>
+                        
+                        <!-- Modifiers Section -->
+                        <div class="modifiers-section" id="modifiers-section" style="display: none;">
+                            <!-- Modifiers will be loaded dynamically -->
+                        </div>
+                        
+                        <!-- Special Instructions -->
+                        <div class="special-instructions">
+                            <label>{{ _("Special Instructions") }}</label>
+                            <textarea id="special-instructions" placeholder="{{ _('Any special requests?') }}"></textarea>
+                        </div>
+                        
+                        <!-- Quantity Selector -->
+                        <div class="quantity-selector">
+                            <button class="btn-qty" id="btn-qty-minus">
+                                <i class="fa fa-minus"></i>
+                            </button>
+                            <span class="qty-value" id="qty-value">1</span>
+                            <button class="btn-qty" id="btn-qty-plus">
+                                <i class="fa fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-primary btn-add-to-cart" id="btn-add-to-cart">
+                        {{ _("Add to Cart") }} - <span id="add-total">0.00</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Call Waiter Button -->
+        <button class="btn-fab btn-call-waiter" id="btn-call-waiter" title="{{ _('Call Waiter') }}">
+            <i class="fa fa-bell"></i>
+        </button>
+        
+        <!-- Order Status Panel -->
+        <div class="order-status-panel" id="order-status-panel" style="display: none;">
+            <div class="status-header">
+                <h3>{{ _("Order Status") }}</h3>
+                <button class="btn-close" id="btn-close-status">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+            <div class="status-content" id="status-content">
+                <!-- Order status will be loaded dynamically -->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="/assets/restaurant_pos/js/digital_menu.js"></script>
+{% endblock %}

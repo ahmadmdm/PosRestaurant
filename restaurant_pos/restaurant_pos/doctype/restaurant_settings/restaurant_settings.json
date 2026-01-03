@@ -1,0 +1,441 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-01-01 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "general_section",
+  "enable_qr_ordering",
+  "enable_digital_menu",
+  "enable_kitchen_display",
+  "enable_waiter_calls",
+  "column_break_general",
+  "default_language",
+  "currency",
+  "company",
+  "branch",
+  "menu_section",
+  "show_item_images",
+  "show_item_description",
+  "show_item_calories",
+  "show_item_allergens",
+  "column_break_menu",
+  "menu_categories_per_row",
+  "items_per_row",
+  "default_item_image",
+  "ordering_section",
+  "allow_guest_ordering",
+  "require_phone_for_order",
+  "min_order_amount",
+  "max_order_items",
+  "column_break_ordering",
+  "order_confirmation_message",
+  "order_confirmation_message_ar",
+  "kitchen_section",
+  "auto_print_kot",
+  "kot_printer",
+  "default_kitchen_station",
+  "column_break_kitchen",
+  "kot_alert_time",
+  "rush_order_threshold",
+  "display_section",
+  "kds_refresh_interval",
+  "kds_columns",
+  "kds_sound_enabled",
+  "column_break_display",
+  "kds_new_order_sound",
+  "kds_alert_sound",
+  "notification_section",
+  "enable_push_notifications",
+  "enable_sms_notifications",
+  "sms_gateway",
+  "column_break_notification",
+  "waiter_call_sound",
+  "order_ready_sound",
+  "payment_section",
+  "enable_table_payment",
+  "enable_split_payment",
+  "enable_tips",
+  "column_break_payment",
+  "default_tip_percentages",
+  "service_charge_percent",
+  "tax_inclusive_pricing",
+  "qr_code_section",
+  "qr_code_base_url",
+  "qr_code_style",
+  "qr_code_logo"
+ ],
+ "fields": [
+  {
+   "fieldname": "general_section",
+   "fieldtype": "Section Break",
+   "label": "General Settings"
+  },
+  {
+   "default": "1",
+   "fieldname": "enable_qr_ordering",
+   "fieldtype": "Check",
+   "label": "Enable QR Ordering"
+  },
+  {
+   "default": "1",
+   "fieldname": "enable_digital_menu",
+   "fieldtype": "Check",
+   "label": "Enable Digital Menu"
+  },
+  {
+   "default": "1",
+   "fieldname": "enable_kitchen_display",
+   "fieldtype": "Check",
+   "label": "Enable Kitchen Display"
+  },
+  {
+   "default": "1",
+   "fieldname": "enable_waiter_calls",
+   "fieldtype": "Check",
+   "label": "Enable Waiter Calls"
+  },
+  {
+   "fieldname": "column_break_general",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "en",
+   "fieldname": "default_language",
+   "fieldtype": "Select",
+   "label": "Default Language",
+   "options": "en\nar"
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Default Branch",
+   "options": "Branch"
+  },
+  {
+   "fieldname": "menu_section",
+   "fieldtype": "Section Break",
+   "label": "Menu Display"
+  },
+  {
+   "default": "1",
+   "fieldname": "show_item_images",
+   "fieldtype": "Check",
+   "label": "Show Item Images"
+  },
+  {
+   "default": "1",
+   "fieldname": "show_item_description",
+   "fieldtype": "Check",
+   "label": "Show Item Description"
+  },
+  {
+   "default": "0",
+   "fieldname": "show_item_calories",
+   "fieldtype": "Check",
+   "label": "Show Calories"
+  },
+  {
+   "default": "1",
+   "fieldname": "show_item_allergens",
+   "fieldtype": "Check",
+   "label": "Show Allergens"
+  },
+  {
+   "fieldname": "column_break_menu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "4",
+   "fieldname": "menu_categories_per_row",
+   "fieldtype": "Select",
+   "label": "Categories Per Row",
+   "options": "2\n3\n4\n6"
+  },
+  {
+   "default": "2",
+   "fieldname": "items_per_row",
+   "fieldtype": "Select",
+   "label": "Items Per Row (Mobile)",
+   "options": "1\n2"
+  },
+  {
+   "fieldname": "default_item_image",
+   "fieldtype": "Attach Image",
+   "label": "Default Item Image"
+  },
+  {
+   "fieldname": "ordering_section",
+   "fieldtype": "Section Break",
+   "label": "Ordering"
+  },
+  {
+   "default": "1",
+   "fieldname": "allow_guest_ordering",
+   "fieldtype": "Check",
+   "label": "Allow Guest Ordering"
+  },
+  {
+   "default": "0",
+   "fieldname": "require_phone_for_order",
+   "fieldtype": "Check",
+   "label": "Require Phone Number"
+  },
+  {
+   "default": "0",
+   "fieldname": "min_order_amount",
+   "fieldtype": "Currency",
+   "label": "Minimum Order Amount"
+  },
+  {
+   "default": "50",
+   "fieldname": "max_order_items",
+   "fieldtype": "Int",
+   "label": "Maximum Items Per Order"
+  },
+  {
+   "fieldname": "column_break_ordering",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Thank you! Your order has been received.",
+   "fieldname": "order_confirmation_message",
+   "fieldtype": "Small Text",
+   "label": "Order Confirmation Message"
+  },
+  {
+   "default": "شكراً لك! تم استلام طلبك.",
+   "fieldname": "order_confirmation_message_ar",
+   "fieldtype": "Small Text",
+   "label": "Order Confirmation Message (Arabic)"
+  },
+  {
+   "fieldname": "kitchen_section",
+   "fieldtype": "Section Break",
+   "label": "Kitchen"
+  },
+  {
+   "default": "1",
+   "fieldname": "auto_print_kot",
+   "fieldtype": "Check",
+   "label": "Auto Print KOT"
+  },
+  {
+   "fieldname": "kot_printer",
+   "fieldtype": "Link",
+   "label": "Default KOT Printer",
+   "options": "POS Printer"
+  },
+  {
+   "fieldname": "default_kitchen_station",
+   "fieldtype": "Link",
+   "label": "Default Kitchen Station",
+   "options": "Kitchen Station"
+  },
+  {
+   "fieldname": "column_break_kitchen",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "10",
+   "description": "Alert if order not started within X minutes",
+   "fieldname": "kot_alert_time",
+   "fieldtype": "Int",
+   "label": "KOT Alert Time (minutes)"
+  },
+  {
+   "default": "5",
+   "description": "Number of pending orders to trigger rush mode",
+   "fieldname": "rush_order_threshold",
+   "fieldtype": "Int",
+   "label": "Rush Order Threshold"
+  },
+  {
+   "fieldname": "display_section",
+   "fieldtype": "Section Break",
+   "label": "Kitchen Display"
+  },
+  {
+   "default": "5",
+   "fieldname": "kds_refresh_interval",
+   "fieldtype": "Int",
+   "label": "KDS Refresh Interval (seconds)"
+  },
+  {
+   "default": "4",
+   "fieldname": "kds_columns",
+   "fieldtype": "Select",
+   "label": "KDS Columns",
+   "options": "2\n3\n4\n5\n6"
+  },
+  {
+   "default": "1",
+   "fieldname": "kds_sound_enabled",
+   "fieldtype": "Check",
+   "label": "Enable KDS Sounds"
+  },
+  {
+   "fieldname": "column_break_display",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "kds_new_order_sound",
+   "fieldtype": "Attach",
+   "label": "New Order Sound"
+  },
+  {
+   "fieldname": "kds_alert_sound",
+   "fieldtype": "Attach",
+   "label": "Alert Sound"
+  },
+  {
+   "fieldname": "notification_section",
+   "fieldtype": "Section Break",
+   "label": "Notifications"
+  },
+  {
+   "default": "0",
+   "fieldname": "enable_push_notifications",
+   "fieldtype": "Check",
+   "label": "Enable Push Notifications"
+  },
+  {
+   "default": "0",
+   "fieldname": "enable_sms_notifications",
+   "fieldtype": "Check",
+   "label": "Enable SMS Notifications"
+  },
+  {
+   "depends_on": "enable_sms_notifications",
+   "fieldname": "sms_gateway",
+   "fieldtype": "Link",
+   "label": "SMS Gateway",
+   "options": "SMS Settings"
+  },
+  {
+   "fieldname": "column_break_notification",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "waiter_call_sound",
+   "fieldtype": "Attach",
+   "label": "Waiter Call Sound"
+  },
+  {
+   "fieldname": "order_ready_sound",
+   "fieldtype": "Attach",
+   "label": "Order Ready Sound"
+  },
+  {
+   "fieldname": "payment_section",
+   "fieldtype": "Section Break",
+   "label": "Payment"
+  },
+  {
+   "default": "1",
+   "fieldname": "enable_table_payment",
+   "fieldtype": "Check",
+   "label": "Enable Table Payment Request"
+  },
+  {
+   "default": "1",
+   "fieldname": "enable_split_payment",
+   "fieldtype": "Check",
+   "label": "Enable Split Payment"
+  },
+  {
+   "default": "1",
+   "fieldname": "enable_tips",
+   "fieldtype": "Check",
+   "label": "Enable Tips"
+  },
+  {
+   "fieldname": "column_break_payment",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "10,15,20",
+   "description": "Comma-separated percentages",
+   "fieldname": "default_tip_percentages",
+   "fieldtype": "Data",
+   "label": "Default Tip Percentages"
+  },
+  {
+   "default": "0",
+   "fieldname": "service_charge_percent",
+   "fieldtype": "Percent",
+   "label": "Service Charge %"
+  },
+  {
+   "default": "1",
+   "fieldname": "tax_inclusive_pricing",
+   "fieldtype": "Check",
+   "label": "Tax Inclusive Pricing"
+  },
+  {
+   "fieldname": "qr_code_section",
+   "fieldtype": "Section Break",
+   "label": "QR Code"
+  },
+  {
+   "fieldname": "qr_code_base_url",
+   "fieldtype": "Data",
+   "label": "QR Code Base URL",
+   "description": "Base URL for QR code links"
+  },
+  {
+   "default": "Modern",
+   "fieldname": "qr_code_style",
+   "fieldtype": "Select",
+   "label": "QR Code Style",
+   "options": "Classic\nModern\nRounded\nDots"
+  },
+  {
+   "fieldname": "qr_code_logo",
+   "fieldtype": "Attach Image",
+   "label": "QR Code Logo"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-01-01 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Restaurant Pos",
+ "name": "Restaurant Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "Restaurant Manager",
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}
