@@ -346,11 +346,11 @@ def create_order(order_data):
         after_discount = subtotal - discount_amount
         
         # Service charge
-        service_percent = flt(settings.service_charge_percent or 0)
+        service_percent = flt(getattr(settings, "service_charge_percent", 0) or 0)
         service_charge = flt(after_discount * service_percent / 100)
         
         # VAT
-        vat_percent = flt(settings.vat_percent or 15)
+        vat_percent = flt(getattr(settings, "vat_percent", 15) or 15)
         vat_amount = flt((after_discount + service_charge) * vat_percent / 100)
         
         grand_total = after_discount + service_charge + vat_amount
@@ -728,8 +728,8 @@ def get_waiter_data():
                 "orders": orders,
                 "calls": calls,
                 "settings": {
-                    "vat_percent": settings.vat_percent or 15,
-                    "service_charge_percent": settings.service_charge_percent or 0,
+                    "vat_percent": getattr(settings, "vat_percent", 15) or 15,
+                    "service_charge_percent": getattr(settings, "service_charge_percent", 0) or 0,
                     "currency": frappe.db.get_default("currency") or "SAR"
                 }
             }
@@ -876,10 +876,10 @@ def add_items_to_order(order_id, items):
         subtotal = sum(flt(item.amount) for item in order.items)
         after_discount = subtotal - flt(order.discount_amount)
         
-        service_percent = flt(settings.service_charge_percent or 0)
+        service_percent = flt(getattr(settings, "service_charge_percent", 0) or 0)
         service_charge = flt(after_discount * service_percent / 100)
         
-        vat_percent = flt(settings.vat_percent or 15)
+        vat_percent = flt(getattr(settings, "vat_percent", 15) or 15)
         vat_amount = flt((after_discount + service_charge) * vat_percent / 100)
         
         order.subtotal = subtotal
