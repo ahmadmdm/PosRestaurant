@@ -324,7 +324,11 @@ def create_order(order_data):
         
         # Get settings
         settings = frappe.get_single("Restaurant Settings")
-        branch = frappe.db.get_value("User", frappe.session.user, "default_branch")
+        try:
+            branch = frappe.db.get_value("User", frappe.session.user, "branch") or frappe.db.get_value("User", frappe.session.user, "default_branch")
+        except Exception:
+            branch = frappe.defaults.get_user_default("branch") or None
+
         
         # Calculate totals
         items = order_data.get("items", [])
@@ -667,7 +671,11 @@ def update_order_status(order_id, status):
 def get_waiter_data():
     """Get data for waiter POS interface"""
     try:
-        branch = frappe.db.get_value("User", frappe.session.user, "default_branch")
+        try:
+            branch = frappe.db.get_value("User", frappe.session.user, "branch") or frappe.db.get_value("User", frappe.session.user, "default_branch")
+        except Exception:
+            branch = frappe.defaults.get_user_default("branch") or None
+
         waiter_name = frappe.db.get_value("User", frappe.session.user, "full_name")
         
         # Get tables assigned to waiter or all tables
