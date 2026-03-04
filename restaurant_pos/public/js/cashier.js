@@ -1009,7 +1009,7 @@
     function completePayment() {
         const btn = document.getElementById('complete-payment');
         const paymentMethod = document.querySelector('.payment-method.active')?.dataset.method || 'Cash';
-        const amount = parseFloat(DOM.paymentTendered.value) || 0;
+        const amount = parseFloat(document.getElementById('tendered-amount').value) || 0;
         
         btn.disabled = true;
         btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> ' + __('Processing...');
