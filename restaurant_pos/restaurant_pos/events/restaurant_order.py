@@ -16,8 +16,8 @@ def on_submit(doc, method):
     create_kitchen_order(doc)
     
     # Update table status
-    if doc.table:
-        update_table_status(doc.table, "Occupied")
+    if doc.restaurant_table:
+        update_table_status(doc.restaurant_table, "Occupied")
     
     # Send notifications
     send_new_order_notification(doc)
@@ -33,7 +33,7 @@ def on_cancel(doc, method):
         "restaurant_order_cancelled",
         {
             "order": doc.name,
-            "table": doc.table
+            "table": doc.restaurant_table
         },
         doctype="Kitchen Order"
     )
@@ -45,9 +45,9 @@ def before_submit(doc, method):
     if not doc.items or len(doc.items) == 0:
         frappe.throw(_("Cannot submit order without items"))
     
-    # Validate table for dine-in
-    if doc.order_type == "Dine In" and not doc.table:
-        frappe.throw(_("Table is required for dine-in orders"))
+    # Validate table for dine-in (warning only, don't block)
+    if doc.order_type == "Dine In" and not doc.restaurant_table:
+        frappe.msgprint(_("No table selected for dine-in order"), indicator="orange")
     
     # Calculate totals
     calculate_order_totals(doc)
@@ -79,7 +79,7 @@ def create_kitchen_order(restaurant_order):
     for station, items in station_items.items():
         kitchen_order = frappe.new_doc("Kitchen Order")
         kitchen_order.restaurant_order = restaurant_order.name
-        kitchen_order.table = restaurant_order.table
+        kitchen_order.restaurant_table = restaurant_order.restaurant_table
         kitchen_order.order_type = restaurant_order.order_type
         kitchen_order.station = station
         kitchen_order.priority = "Normal"
@@ -104,7 +104,7 @@ def create_kitchen_order(restaurant_order):
             {
                 "name": kitchen_order.name,
                 "station": station,
-                "table": restaurant_order.table,
+                "table": restaurant_order.restaurant_table,
                 "items_count": len(items),
                 "order_type": restaurant_order.order_type
             },
@@ -146,35 +146,33 @@ def update_table_status(table_name, status):
 
 def calculate_order_totals(doc):
     """Calculate order totals"""
+    import json
     subtotal = 0
     
     for item in doc.items:
         item_total = flt(item.rate) * cint(item.qty)
         
-        # Add modifier prices
-        if item.modifier_total:
-            item_total += flt(item.modifier_total)
+        # Add modifier prices from JSON modifiers field
+        if item.modifiers:
+            try:
+                modifiers_list = json.loads(item.modifiers) if isinstance(item.modifiers, str) else item.modifiers
+                for mod in modifiers_list:
+                    if isinstance(mod, dict) and mod.get("price"):
+                        item_total += flt(mod.get("price", 0)) * cint(item.qty)
+            except (json.JSONDecodeError, TypeError):
+                pass
         
         item.amount = item_total
         subtotal += item_total
     
     doc.subtotal = subtotal
     
-    # Apply discount
-    if doc.discount_percentage:
-        doc.discount_amount = subtotal * flt(doc.discount_percentage) / 100
+    # Use pre-calculated values or recalculate
+    discounted = subtotal - flt(doc.discount_amount or 0)
     
-    discounted = subtotal - flt(doc.discount_amount)
-    
-    # Calculate tax
-    if doc.tax_rate:
-        doc.tax_amount = discounted * flt(doc.tax_rate) / 100
-    
-    # Calculate service charge
-    if doc.service_charge_rate:
-        doc.service_charge = discounted * flt(doc.service_charge_rate) / 100
-    
-    doc.grand_total = discounted + flt(doc.tax_amount) + flt(doc.service_charge)
+    # Grand total should use what's already set or calculate
+    if not doc.grand_total or doc.grand_total == 0:
+        doc.grand_total = discounted + flt(doc.tax_amount or 0) + flt(doc.service_charge or 0)
 
 
 def send_new_order_notification(order):
@@ -184,7 +182,7 @@ def send_new_order_notification(order):
         "restaurant_new_order",
         {
             "order": order.name,
-            "table": order.table,
+            "table": order.restaurant_table,
             "order_type": order.order_type,
             "items_count": len(order.items)
         },
@@ -192,12 +190,12 @@ def send_new_order_notification(order):
     )
     
     # Notify waiters
-    if order.waiter:
+    if hasattr(order, 'waiter') and order.waiter:
         frappe.publish_realtime(
             "restaurant_new_order",
             {
                 "order": order.name,
-                "table": order.table
+                "table": order.restaurant_table
             },
             user=order.waiter
         )
@@ -217,17 +215,17 @@ def update_order_status(order_name, new_status):
             "order_ready",
             {
                 "order": order_name,
-                "table": order.table
+                "table": order.restaurant_table
             },
             room="restaurant_waiter"
         )
         
         # Notify customer
-        if order.table:
+        if order.restaurant_table:
             frappe.publish_realtime(
                 "order_ready",
                 {"order": order_name},
-                room=f"table_{order.table}"
+                room=f"table_{order.restaurant_table}"
             )
     
     elif new_status == "Served":
@@ -264,14 +262,14 @@ def check_order_completion(restaurant_order_name):
             "order_ready",
             {
                 "order": restaurant_order_name,
-                "table": order.table
+                "table": order.restaurant_table
             },
             room="restaurant_waiter"
         )
         
-        if order.table:
+        if order.restaurant_table:
             frappe.publish_realtime(
                 "order_ready",
-                {"order": restaurant_order_name, "table": order.table},
-                room=f"table_{order.table}"
+                {"order": restaurant_order_name, "table": order.restaurant_table},
+                room=f"table_{order.restaurant_table}"
             )

@@ -79,7 +79,8 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Status",
-   "options": "Pending\nSent to Kitchen\nPreparing\nReady\nServed\nCancelled"
+   "options": "Pending\nSent to Kitchen\nPreparing\nReady\nServed\nCancelled",
+   "allow_on_submit": 1
   },
   {
    "collapsible": 1,

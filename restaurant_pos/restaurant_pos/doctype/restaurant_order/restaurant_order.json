@@ -8,7 +8,9 @@
   "naming_series",
   "restaurant_table",
   "table_number",
+  "table_session",
   "branch",
+  "waiter",
   "column_break_main",
   "order_type",
   "status",
@@ -72,12 +74,26 @@
    "read_only": 1
   },
   {
+   "fieldname": "table_session",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Table Session",
+   "options": "Table Session",
+   "read_only": 1
+  },
+  {
    "fieldname": "branch",
    "fieldtype": "Link",
    "in_standard_filter": 1,
    "label": "Branch",
    "options": "Branch",
    "reqd": 1
+  },
+  {
+   "fieldname": "waiter",
+   "fieldtype": "Link",
+   "label": "Waiter",
+   "options": "User"
   },
   {
    "fieldname": "column_break_main",
@@ -99,7 +115,8 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Status",
-   "options": "Draft\nConfirmed\nPreparing\nReady\nServed\nPaid\nCompleted\nCancelled\nMerged"
+   "options": "Draft\nConfirmed\nPreparing\nReady\nServed\nPaid\nCompleted\nCancelled\nMerged",
+   "allow_on_submit": 1
   },
   {
    "default": "1",
@@ -218,14 +235,16 @@
    "fieldtype": "Select",
    "in_standard_filter": 1,
    "label": "Payment Status",
-   "options": "Unpaid\nPartially Paid\nPaid\nRefunded"
+   "options": "Unpaid\nPartially Paid\nPaid\nRefunded",
+   "allow_on_submit": 1
   },
   {
    "default": "0",
    "fieldname": "paid_amount",
    "fieldtype": "Currency",
    "label": "Paid Amount",
-   "read_only": 1
+   "read_only": 1,
+   "allow_on_submit": 1
   },
   {
    "fieldname": "column_break_payment",
@@ -235,14 +254,16 @@
    "fieldname": "payment_method",
    "fieldtype": "Link",
    "label": "Payment Method",
-   "options": "Mode of Payment"
+   "options": "Mode of Payment",
+   "allow_on_submit": 1
   },
   {
    "fieldname": "pos_invoice",
    "fieldtype": "Link",
    "label": "POS Invoice",
    "options": "POS Invoice",
-   "read_only": 1
+   "read_only": 1,
+   "allow_on_submit": 1
   },
   {
    "collapsible": 1,
@@ -276,7 +297,8 @@
    "fieldname": "confirmed_at",
    "fieldtype": "Datetime",
    "label": "Confirmed At",
-   "read_only": 1
+   "read_only": 1,
+   "allow_on_submit": 1
   },
   {
    "fieldname": "column_break_timing",
@@ -286,19 +308,22 @@
    "fieldname": "ready_at",
    "fieldtype": "Datetime",
    "label": "Ready At",
-   "read_only": 1
+   "read_only": 1,
+   "allow_on_submit": 1
   },
   {
    "fieldname": "served_at",
    "fieldtype": "Datetime",
    "label": "Served At",
-   "read_only": 1
+   "read_only": 1,
+   "allow_on_submit": 1
   },
   {
    "fieldname": "completed_at",
    "fieldtype": "Datetime",
    "label": "Completed At",
-   "read_only": 1
+   "read_only": 1,
+   "allow_on_submit": 1
   }
  ],
  "index_web_pages_for_search": 0,

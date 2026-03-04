@@ -385,6 +385,18 @@
                             <span>{{ _("Print Receipt") }}</span>
                         </label>
                     </div>
+                    
+                    <!-- Print Actions -->
+                    <div class="print-actions">
+                        <button type="button" class="btn-print btn-print-receipt" id="btn-print-receipt">
+                            <i class="fa fa-print"></i>
+                            <span>{{ _("Print") }}</span>
+                        </button>
+                        <button type="button" class="btn-print btn-pdf" id="btn-export-pdf">
+                            <i class="fa fa-file-pdf"></i>
+                            <span>{{ _("PDF") }}</span>
+                        </button>
+                    </div>
                 </div>
             </div>
             <div class="modal-actions payment-actions">
@@ -536,6 +548,48 @@
     
     <!-- Toast Notifications -->
     <div class="toast-container" id="toast-container"></div>
+    
+    <!-- Success Modal (After Payment) -->
+    <div class="modal" id="success-modal" style="display:none;">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="success-modal-content">
+                <div class="success-icon">
+                    <i class="fa fa-check"></i>
+                </div>
+                <h2 class="success-title">{{ _("Payment Successful!") }}</h2>
+                <p class="success-message">{{ _("Transaction completed successfully") }}</p>
+                <div class="success-details">
+                    <div class="success-row">
+                        <span>{{ _("Order Number") }}</span>
+                        <span id="success-order-id">-</span>
+                    </div>
+                    <div class="success-row">
+                        <span>{{ _("Paid Amount") }}</span>
+                        <span id="success-paid">0.00</span>
+                    </div>
+                    <div class="success-row">
+                        <span>{{ _("Change") }}</span>
+                        <span id="success-change">0.00</span>
+                    </div>
+                </div>
+                <div class="print-actions">
+                    <button type="button" class="btn-print btn-print-receipt" id="success-print-receipt">
+                        <i class="fa fa-print"></i>
+                        <span>{{ _("Print Receipt") }}</span>
+                    </button>
+                    <button type="button" class="btn-print btn-pdf" id="success-export-pdf">
+                        <i class="fa fa-file-pdf"></i>
+                        <span>{{ _("Export PDF") }}</span>
+                    </button>
+                </div>
+                <button class="btn-confirm" id="close-success-modal" style="margin-top: 20px; width: 100%;">
+                    <i class="fa fa-check"></i>
+                    {{ _("New Order") }}
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Audio -->

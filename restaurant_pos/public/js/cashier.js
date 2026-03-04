@@ -165,6 +165,29 @@
             }
         });
         
+        // Print buttons in payment modal
+        const btnPrintReceipt = document.getElementById('btn-print-receipt');
+        if (btnPrintReceipt) {
+            btnPrintReceipt.addEventListener('click', () => {
+                if (POSState.currentOrderId) {
+                    printReceipt(POSState.currentOrderId);
+                } else {
+                    showToast(__('No order selected'), 'warning');
+                }
+            });
+        }
+        
+        const btnExportPdf = document.getElementById('btn-export-pdf');
+        if (btnExportPdf) {
+            btnExportPdf.addEventListener('click', () => {
+                if (POSState.currentOrderId) {
+                    exportPDF(POSState.currentOrderId);
+                } else {
+                    showToast(__('No order selected'), 'warning');
+                }
+            });
+        }
+        
         // Orders panel
         document.getElementById('close-orders-panel').addEventListener('click', () => {
             DOM.ordersPanel.classList.remove('show');
@@ -1029,16 +1052,18 @@
                     btn.innerHTML = '<i class="fa fa-check"></i> ' + __('Complete Payment');
                     
                     if (r.message && r.message.success) {
-                        showToast(__('Payment successful! Change: ') + formatCurrency(r.message.change), 'success');
                         playSound('success');
                         
-                        // Print receipt if enabled
+                        // Auto print receipt if enabled
                         if (document.getElementById('print-receipt').checked) {
-                            // Print receipt logic
+                            printReceipt(r.message.order_id);
                         }
                         
                         closeAllModals();
-                        resetOrder();
+                        
+                        // Show success modal with print options
+                        showSuccessModal(r.message.order_id, amount, r.message.change);
+                        
                         loadPendingOrders();
                     } else {
                         showToast(r.message?.message || __('Payment failed'), 'error');
@@ -1334,6 +1359,78 @@
     // Translation helper
     function __(text) {
         return frappe._ ? frappe._(text) : text;
+    }
+    
+    // ========== PRINT & PDF FUNCTIONS ==========
+    
+    // Print Receipt
+    function printReceipt(orderId) {
+        if (!orderId) {
+            showToast(__('No order to print'), 'error');
+            return;
+        }
+        
+        // Open print format in new window
+        const printUrl = `/api/method/frappe.utils.print_format.download_pdf?doctype=Restaurant%20Order&name=${encodeURIComponent(orderId)}&format=Restaurant%20Receipt&no_letterhead=0`;
+        
+        // Try iframe printing first
+        const iframe = document.createElement('iframe');
+        iframe.style.display = 'none';
+        iframe.src = `/printview?doctype=Restaurant%20Order&name=${encodeURIComponent(orderId)}&format=Restaurant%20Receipt&trigger_print=1`;
+        document.body.appendChild(iframe);
+        
+        // Remove iframe after print
+        iframe.onload = function() {
+            setTimeout(() => {
+                try {
+                    iframe.contentWindow.print();
+                } catch(e) {
+                    // Fallback: open in new window
+                    window.open(`/printview?doctype=Restaurant%20Order&name=${encodeURIComponent(orderId)}&format=Restaurant%20Receipt`, '_blank');
+                }
+            }, 500);
+        };
+        
+        showToast(__('Printing receipt...'), 'info');
+    }
+    
+    // Export to PDF
+    function exportPDF(orderId) {
+        if (!orderId) {
+            showToast(__('No order to export'), 'error');
+            return;
+        }
+        
+        const pdfUrl = `/api/method/frappe.utils.print_format.download_pdf?doctype=Restaurant%20Order&name=${encodeURIComponent(orderId)}&format=Restaurant%20Receipt&no_letterhead=0`;
+        
+        // Download PDF
+        const link = document.createElement('a');
+        link.href = pdfUrl;
+        link.download = `Receipt-${orderId}.pdf`;
+        link.target = '_blank';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        showToast(__('Downloading PDF...'), 'info');
+    }
+    
+    // Success Modal after payment
+    function showSuccessModal(orderId, paidAmount, change) {
+        const modal = document.getElementById('success-modal');
+        document.getElementById('success-order-id').textContent = orderId;
+        document.getElementById('success-paid').textContent = formatCurrency(paidAmount);
+        document.getElementById('success-change').textContent = formatCurrency(change);
+        
+        modal.style.display = 'flex';
+        
+        // Bind print buttons
+        document.getElementById('success-print-receipt').onclick = () => printReceipt(orderId);
+        document.getElementById('success-export-pdf').onclick = () => exportPDF(orderId);
+        document.getElementById('close-success-modal').onclick = () => {
+            modal.style.display = 'none';
+            resetOrder();
+        };
     }
     
     // Initialize on DOM ready

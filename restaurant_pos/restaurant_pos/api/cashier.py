@@ -66,7 +66,7 @@ def get_pos_data():
                     "currency": frappe.db.get_default("currency") or "SAR",
                     "allow_discount": getattr(settings, "allow_discount", True),
                     "max_discount_percent": getattr(settings, "max_discount_percent", 100) or 100,
-                    "default_order_type": "Dine In",
+                    "default_order_type": "Takeaway",
                     "print_kitchen_order": getattr(settings, "print_kitchen_order", True),
                     "auto_print_receipt": getattr(settings, "auto_print_receipt", False)
                 }
@@ -365,7 +365,7 @@ def create_order(order_data):
         
         # Create order document
         order = frappe.new_doc("Restaurant Order")
-        order.order_type = order_data.get("order_type", "Dine In")
+        order.order_type = order_data.get("order_type", "Takeaway")
         if not branch:
             try:
                 branch = frappe.db.get_all("Branch", limit=1)[0].name
@@ -410,8 +410,7 @@ def create_order(order_data):
                 "rate": flt(item.get("rate")),
                 "amount": flt(item.get("total")),
                 "modifiers": json.dumps(item.get("modifiers", [])) if item.get("modifiers") else None,
-                "special_instructions": item.get("note"),
-                "kitchen_station": item.get("kitchen_station")
+                "special_instructions": item.get("note")
             })
         
         # Set cashier
@@ -531,6 +530,91 @@ def process_payment(order_id, payment_data):
     except Exception as e:
         frappe.log_error(str(e), "Process Payment Error")
         return {"success": False, "message": str(e)}
+
+
+def create_pos_invoice_for_order(order, payment_data):
+    """Create an ERPNext POS Invoice from Restaurant Order"""
+    # Check if POS Invoice DocType exists
+    if not frappe.db.exists("DocType", "POS Invoice"):
+        return None
+        
+    # Determine POS Profile
+    company = frappe.defaults.get_user_default("company")
+    pos_profile = frappe.db.get_value("POS Profile", {"user": frappe.session.user, "company": company})
+    if not pos_profile:
+        pos_profile = frappe.db.get_value("POS Profile", {"company": company})
+        
+    if not pos_profile:
+        # Skip POS Invoice creation if no profile configured
+        frappe.log_error("No POS Profile found", "Restaurant POS Integration")
+        return None
+        
+    profile_doc = frappe.get_cached_doc("POS Profile", pos_profile)
+    
+    # Prepare POS Invoice Doc
+    pi = frappe.new_doc("POS Invoice")
+    pi.is_pos = 1
+    pi.pos_profile = pos_profile
+    pi.company = profile_doc.company
+    
+    # Get customer - prefer order customer, then profile default, then walk-in
+    customer = None
+    if hasattr(order, "customer") and order.customer:
+        customer = order.customer
+    elif profile_doc.customer:
+        customer = profile_doc.customer
+    else:
+        # Get default walk-in customer
+        customer = frappe.db.get_value("Customer", {"customer_name": ["like", "%Walk%"]}, "name")
+        if not customer:
+            customer = frappe.db.get_value("Customer", {"disabled": 0}, "name")
+    
+    pi.customer = customer
+    pi.set_posting_time = 1
+    pi.posting_date = nowdate()
+    pi.posting_time = nowtime()
+    
+    # Add items
+    has_items = False
+    for item in order.items:
+        if item.status == "Cancelled":
+            continue
+            
+        menu_item = frappe.db.get_value("Menu Item", item.menu_item, ["linked_item", "item_name"], as_dict=True)
+        item_code = None
+        
+        if menu_item and menu_item.linked_item:
+            item_code = menu_item.linked_item
+        elif menu_item:
+            # Check if item exists by name
+            if frappe.db.exists("Item", menu_item.item_name):
+                item_code = menu_item.item_name
+        
+        if not item_code or not frappe.db.exists("Item", item_code):
+            continue
+            
+        pi.append("items", {
+            "item_code": item_code,
+            "qty": item.qty,
+            "rate": item.rate,
+            "warehouse": profile_doc.warehouse,
+            "income_account": profile_doc.income_account if hasattr(profile_doc, "income_account") else None
+        })
+        has_items = True
+        
+    if not has_items:
+        # No valid items, skip POS Invoice
+        return None
+        
+    # Add payment
+    pi.append("payments", {
+        "mode_of_payment": payment_data.get("method", "Cash"),
+        "amount": flt(payment_data.get("amount", order.grand_total))
+    })
+    
+    pi.insert()
+    pi.submit()
+    return pi.name
 
 
 def close_table_session(session_name, table_name):
@@ -886,8 +970,7 @@ def add_items_to_order(order_id, items):
                 "rate": flt(item.get("rate")),
                 "amount": flt(item.get("total")),
                 "modifiers": json.dumps(item.get("modifiers", [])) if item.get("modifiers") else None,
-                "special_instructions": item.get("note"),
-                "kitchen_station": item.get("kitchen_station")
+                "special_instructions": item.get("note")
             })
         
         # Recalculate totals

@@ -62,7 +62,8 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Status",
-   "options": "Pending\nPreparing\nReady\nServed"
+   "options": "Pending\nPreparing\nReady\nServed\nCancelled",
+   "allow_on_submit": 1
   },
   {
    "fieldname": "started_at",
