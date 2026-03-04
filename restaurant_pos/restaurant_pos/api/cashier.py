@@ -327,7 +327,15 @@ def create_order(order_data):
         try:
             branch = frappe.db.get_value("User", frappe.session.user, "branch") or frappe.db.get_value("User", frappe.session.user, "default_branch")
         except Exception:
-            branch = frappe.defaults.get_user_default("branch") or None
+            try:
+                branch = frappe.defaults.get_user_default("branch")
+                if not branch:
+                    # Fallback to the first available branch if none is set for the user to avoid errors
+                    branches = frappe.db.get_all("Branch", limit=1)
+                    if branches:
+                        branch = branches[0].name
+            except Exception:
+                branch = None
 
         
         # Calculate totals
@@ -358,6 +366,10 @@ def create_order(order_data):
         # Create order document
         order = frappe.new_doc("Restaurant Order")
         order.order_type = order_data.get("order_type", "Dine In")
+        if not branch:
+            try:
+                branch = frappe.db.get_all("Branch", limit=1)[0].name
+            except: pass
         order.branch = branch
         order.status = "New"
         
@@ -674,7 +686,15 @@ def get_waiter_data():
         try:
             branch = frappe.db.get_value("User", frappe.session.user, "branch") or frappe.db.get_value("User", frappe.session.user, "default_branch")
         except Exception:
-            branch = frappe.defaults.get_user_default("branch") or None
+            try:
+                branch = frappe.defaults.get_user_default("branch")
+                if not branch:
+                    # Fallback to the first available branch if none is set for the user to avoid errors
+                    branches = frappe.db.get_all("Branch", limit=1)
+                    if branches:
+                        branch = branches[0].name
+            except Exception:
+                branch = None
 
         waiter_name = frappe.db.get_value("User", frappe.session.user, "full_name")
         
