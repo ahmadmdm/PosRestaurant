@@ -1,0 +1,30 @@
+{
+ "creation": "2026-01-04 12:00:00.000000",
+ "docstatus": 0,
+ "doctype": "Page",
+ "icon": "fa fa-user-tie",
+ "idx": 0,
+ "modified": "2026-01-04 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Restaurant Pos",
+ "name": "waiter-pos",
+ "owner": "Administrator",
+ "page_name": "waiter-pos",
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Restaurant Manager"
+  },
+  {
+   "role": "Waiter"
+  },
+  {
+   "role": "POS User"
+  }
+ ],
+ "standard": "Yes",
+ "system_page": 0,
+ "title": "Waiter POS"
+}

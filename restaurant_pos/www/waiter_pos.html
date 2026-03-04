@@ -1,0 +1,389 @@
+{% extends "templates/web.html" %}
+{% block title %}{{ _("Waiter POS") }}{% endblock %}
+
+{% block head_include %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/assets/restaurant_pos/css/waiter_pos.css">
+{% endblock %}
+
+{% block page_content %}
+<div id="waiter-pos-app" data-waiter="{{ frappe.session.user }}" data-branch="{{ branch or '' }}" dir="rtl">
+    <!-- Header -->
+    <header class="waiter-header">
+        <div class="header-left">
+            <button class="btn-back" id="btn-back">
+                <i class="fa fa-arrow-right"></i>
+            </button>
+            <h1 class="waiter-title">
+                <i class="fa fa-concierge-bell"></i>
+                {{ _("Waiter POS") }}
+            </h1>
+        </div>
+        <div class="header-center">
+            <span class="waiter-name" id="waiter-name">{{ frappe.session.user }}</span>
+        </div>
+        <div class="header-right">
+            <button class="btn-icon btn-notifications" id="btn-notifications">
+                <i class="fa fa-bell"></i>
+                <span class="badge" id="notification-badge">0</span>
+            </button>
+            <button class="btn-icon" id="btn-refresh">
+                <i class="fa fa-sync-alt"></i>
+            </button>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="waiter-main">
+        <!-- View Switcher -->
+        <div class="view-switcher">
+            <button class="view-btn active" data-view="tables">
+                <i class="fa fa-th-large"></i>
+                {{ _("Tables") }}
+            </button>
+            <button class="view-btn" data-view="orders">
+                <i class="fa fa-list-alt"></i>
+                {{ _("My Orders") }}
+                <span class="badge" id="orders-badge">0</span>
+            </button>
+            <button class="view-btn" data-view="calls">
+                <i class="fa fa-bell"></i>
+                {{ _("Calls") }}
+                <span class="badge badge-urgent" id="calls-badge">0</span>
+            </button>
+        </div>
+        
+        <!-- Tables View -->
+        <section class="view-section tables-view" id="tables-view">
+            <div class="section-header">
+                <h2>{{ _("My Tables") }}</h2>
+                <div class="filter-tabs">
+                    <button class="filter-tab active" data-filter="mine">{{ _("My Tables") }}</button>
+                    <button class="filter-tab" data-filter="all">{{ _("All") }}</button>
+                </div>
+            </div>
+            
+            <div class="table-legend">
+                <span class="legend-item available">
+                    <span class="dot"></span>{{ _("Available") }}
+                </span>
+                <span class="legend-item occupied">
+                    <span class="dot"></span>{{ _("Occupied") }}
+                </span>
+                <span class="legend-item needs-attention">
+                    <span class="dot"></span>{{ _("Needs Attention") }}
+                </span>
+            </div>
+            
+            <div class="tables-grid" id="tables-grid">
+                <!-- Tables loaded dynamically -->
+            </div>
+        </section>
+        
+        <!-- Orders View -->
+        <section class="view-section orders-view" id="orders-view" style="display:none;">
+            <div class="section-header">
+                <h2>{{ _("My Orders") }}</h2>
+                <div class="filter-tabs">
+                    <button class="filter-tab active" data-status="active">{{ _("Active") }}</button>
+                    <button class="filter-tab" data-status="ready">{{ _("Ready") }}</button>
+                    <button class="filter-tab" data-status="all">{{ _("All") }}</button>
+                </div>
+            </div>
+            
+            <div class="orders-list" id="waiter-orders-list">
+                <!-- Orders loaded dynamically -->
+            </div>
+        </section>
+        
+        <!-- Waiter Calls View -->
+        <section class="view-section calls-view" id="calls-view" style="display:none;">
+            <div class="section-header">
+                <h2>{{ _("Customer Calls") }}</h2>
+            </div>
+            
+            <div class="calls-list" id="calls-list">
+                <!-- Calls loaded dynamically -->
+            </div>
+        </section>
+    </main>
+    
+    <!-- Table Action Sheet -->
+    <div class="action-sheet" id="table-action-sheet">
+        <div class="sheet-overlay"></div>
+        <div class="sheet-content">
+            <div class="sheet-header">
+                <h3 id="sheet-table-name">{{ _("Table") }} #1</h3>
+                <span class="table-status" id="sheet-table-status">{{ _("Available") }}</span>
+            </div>
+            
+            <div class="sheet-info" id="sheet-info">
+                <div class="info-row">
+                    <span class="info-label">{{ _("Guests") }}</span>
+                    <span class="info-value" id="sheet-guests">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">{{ _("Time") }}</span>
+                    <span class="info-value" id="sheet-time">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">{{ _("Total") }}</span>
+                    <span class="info-value" id="sheet-total">0.00</span>
+                </div>
+            </div>
+            
+            <div class="sheet-actions">
+                <button class="sheet-btn btn-primary" id="btn-new-order">
+                    <i class="fa fa-plus"></i>
+                    {{ _("New Order") }}
+                </button>
+                <button class="sheet-btn btn-secondary" id="btn-view-order" style="display:none;">
+                    <i class="fa fa-eye"></i>
+                    {{ _("View Order") }}
+                </button>
+                <button class="sheet-btn btn-secondary" id="btn-add-items" style="display:none;">
+                    <i class="fa fa-utensils"></i>
+                    {{ _("Add Items") }}
+                </button>
+                <button class="sheet-btn btn-success" id="btn-request-bill" style="display:none;">
+                    <i class="fa fa-receipt"></i>
+                    {{ _("Request Bill") }}
+                </button>
+                <button class="sheet-btn btn-warning" id="btn-transfer-table" style="display:none;">
+                    <i class="fa fa-exchange-alt"></i>
+                    {{ _("Transfer") }}
+                </button>
+            </div>
+            
+            <button class="sheet-close" id="close-action-sheet">
+                <i class="fa fa-times"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Quick Order Panel -->
+    <div class="quick-order-panel" id="quick-order-panel">
+        <div class="panel-header">
+            <button class="btn-back" id="close-quick-order">
+                <i class="fa fa-arrow-right"></i>
+            </button>
+            <div class="order-info">
+                <h3 id="quick-order-table">{{ _("Table") }} #1</h3>
+                <span class="order-type" id="quick-order-type">{{ _("Dine In") }}</span>
+            </div>
+            <button class="btn-cart" id="btn-show-cart">
+                <i class="fa fa-shopping-cart"></i>
+                <span class="badge" id="quick-cart-badge">0</span>
+            </button>
+        </div>
+        
+        <!-- Categories -->
+        <div class="quick-categories" id="quick-categories">
+            <button class="cat-btn active" data-category="all">
+                <span class="cat-icon"><i class="fa fa-th"></i></span>
+                <span class="cat-name">{{ _("All") }}</span>
+            </button>
+            <!-- Categories loaded dynamically -->
+        </div>
+        
+        <!-- Search -->
+        <div class="quick-search">
+            <i class="fa fa-search"></i>
+            <input type="text" id="quick-search" placeholder="{{ _('Search items...') }}">
+        </div>
+        
+        <!-- Items Grid -->
+        <div class="quick-items-grid" id="quick-items-grid">
+            <!-- Items loaded dynamically -->
+        </div>
+        
+        <!-- Cart Summary Bar -->
+        <div class="cart-summary-bar" id="cart-summary-bar" style="display:none;">
+            <div class="cart-info">
+                <span class="cart-count" id="bar-cart-count">0 {{ _("items") }}</span>
+                <span class="cart-total" id="bar-cart-total">0.00</span>
+            </div>
+            <button class="btn-send-order" id="btn-send-order">
+                <i class="fa fa-paper-plane"></i>
+                {{ _("Send Order") }}
+            </button>
+        </div>
+    </div>
+    
+    <!-- Cart Panel -->
+    <div class="cart-panel" id="cart-panel">
+        <div class="panel-header">
+            <button class="btn-back" id="close-cart-panel">
+                <i class="fa fa-arrow-right"></i>
+            </button>
+            <h3>{{ _("Order Details") }}</h3>
+            <button class="btn-icon btn-clear-cart" id="btn-clear-waiter-cart">
+                <i class="fa fa-trash"></i>
+            </button>
+        </div>
+        
+        <div class="cart-items-list" id="waiter-cart-items">
+            <!-- Cart items -->
+        </div>
+        
+        <div class="cart-totals">
+            <div class="total-row">
+                <span>{{ _("Subtotal") }}</span>
+                <span id="waiter-subtotal">0.00</span>
+            </div>
+            <div class="total-row">
+                <span>{{ _("Service") }}</span>
+                <span id="waiter-service">0.00</span>
+            </div>
+            <div class="total-row">
+                <span>{{ _("VAT") }}</span>
+                <span id="waiter-vat">0.00</span>
+            </div>
+            <div class="total-row total-grand">
+                <span>{{ _("Total") }}</span>
+                <span id="waiter-total">0.00</span>
+            </div>
+        </div>
+        
+        <div class="cart-notes">
+            <textarea id="waiter-order-notes" placeholder="{{ _('Order notes...') }}"></textarea>
+        </div>
+        
+        <div class="cart-actions">
+            <button class="btn-secondary" id="btn-hold-waiter-order">
+                <i class="fa fa-pause"></i>
+                {{ _("Hold") }}
+            </button>
+            <button class="btn-primary" id="btn-submit-waiter-order">
+                <i class="fa fa-check"></i>
+                {{ _("Submit Order") }}
+            </button>
+        </div>
+    </div>
+    
+    <!-- Item Customization Modal -->
+    <div class="modal" id="waiter-item-modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="waiter-modal-item-name">{{ _("Item") }}</h3>
+                <button class="btn-close" id="close-waiter-item-modal">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="item-image" id="waiter-modal-item-image"></div>
+                <div class="item-price" id="waiter-modal-item-price">0.00</div>
+                
+                <div class="modifiers-section" id="waiter-modifiers">
+                    <!-- Modifiers loaded dynamically -->
+                </div>
+                
+                <div class="special-instructions">
+                    <label>{{ _("Special Instructions") }}</label>
+                    <textarea id="waiter-item-notes" placeholder="{{ _('Any special requests?') }}"></textarea>
+                </div>
+                
+                <div class="qty-selector">
+                    <button class="qty-btn" id="waiter-qty-minus">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                    <span class="qty-display" id="waiter-qty">1</span>
+                    <button class="qty-btn" id="waiter-qty-plus">
+                        <i class="fa fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel" id="cancel-waiter-item">{{ _("Cancel") }}</button>
+                <button class="btn-confirm" id="add-waiter-item">
+                    {{ _("Add") }} - <span id="waiter-item-total">0.00</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Order Detail Modal -->
+    <div class="modal" id="order-detail-modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>{{ _("Order") }} #<span id="detail-order-id"></span></h3>
+                <span class="order-status-badge" id="detail-order-status">{{ _("New") }}</span>
+                <button class="btn-close" id="close-order-detail">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="order-meta">
+                    <div class="meta-row">
+                        <i class="fa fa-chair"></i>
+                        <span id="detail-table">-</span>
+                    </div>
+                    <div class="meta-row">
+                        <i class="fa fa-clock"></i>
+                        <span id="detail-time">-</span>
+                    </div>
+                    <div class="meta-row">
+                        <i class="fa fa-users"></i>
+                        <span id="detail-guests">-</span>
+                    </div>
+                </div>
+                
+                <div class="order-items-detail" id="detail-items">
+                    <!-- Items listed here -->
+                </div>
+                
+                <div class="order-totals-detail">
+                    <div class="total-row">
+                        <span>{{ _("Subtotal") }}</span>
+                        <span id="detail-subtotal">0.00</span>
+                    </div>
+                    <div class="total-row">
+                        <span>{{ _("Service Charge") }}</span>
+                        <span id="detail-service">0.00</span>
+                    </div>
+                    <div class="total-row">
+                        <span>{{ _("VAT") }}</span>
+                        <span id="detail-vat">0.00</span>
+                    </div>
+                    <div class="total-row total-grand">
+                        <span>{{ _("Total") }}</span>
+                        <span id="detail-total">0.00</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary" id="btn-add-more-items">
+                    <i class="fa fa-plus"></i>
+                    {{ _("Add Items") }}
+                </button>
+                <button class="btn-primary" id="btn-mark-served">
+                    <i class="fa fa-check"></i>
+                    {{ _("Mark Served") }}
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+    
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay" style="display:none;">
+        <div class="loading-spinner"></div>
+    </div>
+</div>
+
+<!-- Audio -->
+<audio id="sound-call" preload="auto">
+    <source src="/assets/restaurant_pos/sounds/alert.mp3" type="audio/mpeg">
+</audio>
+<audio id="sound-ready" preload="auto">
+    <source src="/assets/restaurant_pos/sounds/new-order.mp3" type="audio/mpeg">
+</audio>
+{% endblock %}
+
+{% block script %}
+<script src="/assets/restaurant_pos/js/waiter_pos.js"></script>
+{% endblock %}

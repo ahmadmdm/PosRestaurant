@@ -1,31 +1,93 @@
 {
  "charts": [],
- "content": "[{\"type\": \"header\", \"data\": {\"text\": \"Restaurant POS\", \"level\": 2}}, {\"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Restaurant Order\", \"link_to\": \"Restaurant Order\", \"doc_view\": \"List\", \"color\": \"Blue\"}}, {\"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Restaurant Table\", \"link_to\": \"Restaurant Table\", \"doc_view\": \"List\", \"color\": \"Green\"}}, {\"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Menu Item\", \"link_to\": \"Menu Item\", \"doc_view\": \"List\", \"color\": \"Orange\"}}, {\"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Settings\", \"link_to\": \"Restaurant Settings\", \"doc_view\": \"\", \"color\": \"Grey\"}}]",
- "creation": "2026-01-01 00:00:00.000000",
+ "content": "[{\"type\":\"header\",\"data\":{\"text\":\"🍽️ نظام إدارة المطعم - Restaurant POS\",\"col\":12}},{\"type\":\"spacer\",\"data\":{\"col\":12}},{\"type\":\"header\",\"data\":{\"text\":\"📊 لوحة التحكم السريعة\",\"col\":12}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"POS Cashier\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Waiter POS\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Kitchen Display\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Digital Menu\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Restaurant Order\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Restaurant Table\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Menu Item\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Settings\",\"col\":3}},{\"type\":\"spacer\",\"data\":{\"col\":12}},{\"type\":\"card\",\"data\":{\"card_name\":\"💰 نقاط البيع - POS Systems\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"🖥️ شاشات العرض - Display Screens\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"👨‍💼 إدارة الطلبات - Order Management\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"🪑 إدارة الطاولات - Table Management\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"🍔 إدارة القائمة - Menu Management\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"👨‍🍳 إدارة المطبخ - Kitchen Management\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"⚙️ الإعدادات - Settings\",\"col\":4}}]",
+ "creation": "2026-01-03 21:14:53.997937",
  "custom_blocks": [],
  "docstatus": 0,
  "doctype": "Workspace",
- "for_user": "",
  "hide_custom": 0,
- "icon": "restaurant",
+ "icon": "retail",
  "idx": 0,
- "is_default": 0,
+ "indicator_color": "green",
  "is_hidden": 0,
  "label": "Restaurant POS",
  "links": [
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Orders & Tables",
+   "label": "💰 نقاط البيع - POS Systems",
    "link_count": 0,
    "link_type": "DocType",
    "onboard": 0,
    "type": "Card Break"
   },
   {
+   "description": "كاشير نقطة البيع الرئيسي",
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Restaurant Order",
+   "label": "💵 الكاشير الرئيسي - POS Cashier",
+   "link_count": 0,
+   "link_to": "pos-cashier",
+   "link_type": "Page",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "description": "نقطة بيع للنادلين",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "🧑‍🍳 كاشير الويتر - Waiter POS",
+   "link_count": 0,
+   "link_to": "waiter-pos",
+   "link_type": "Page",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "🖥️ شاشات العرض - Display Screens",
+   "link_count": 0,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "description": "شاشة عرض المطبخ للطهاة",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "🍳 شاشة المطبخ - Kitchen Display",
+   "link_count": 0,
+   "link_to": "/kitchen",
+   "link_type": "URL",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "description": "القائمة الرقمية للزبائن",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "📱 القائمة الرقمية - Digital Menu",
+   "link_count": 0,
+   "link_to": "/menu",
+   "link_type": "URL",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "👨‍💼 إدارة الطلبات - Order Management",
+   "link_count": 0,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "description": "جميع طلبات المطعم",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "📋 الطلبات - Restaurant Orders",
    "link_count": 0,
    "link_to": "Restaurant Order",
    "link_type": "DocType",
@@ -33,106 +95,21 @@
    "type": "Link"
   },
   {
+   "description": "طلبات المطبخ",
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Restaurant Table",
-   "link_count": 0,
-   "link_to": "Restaurant Table",
-   "link_type": "DocType",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Table Session",
-   "link_count": 0,
-   "link_to": "Table Session",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Menu Management",
-   "link_count": 0,
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Menu Item",
-   "link_count": 0,
-   "link_to": "Menu Item",
-   "link_type": "DocType",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Menu Category",
-   "link_count": 0,
-   "link_to": "Menu Category",
-   "link_type": "DocType",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Menu Item Modifier",
-   "link_count": 0,
-   "link_to": "Menu Item Modifier",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Kitchen",
-   "link_count": 0,
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Kitchen Order",
+   "label": "🎫 طلبات المطبخ - Kitchen Orders",
    "link_count": 0,
    "link_to": "Kitchen Order",
    "link_type": "DocType",
-   "onboard": 0,
+   "onboard": 1,
    "type": "Link"
   },
   {
+   "description": "طلبات النادل",
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Kitchen Station",
-   "link_count": 0,
-   "link_to": "Kitchen Station",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Service",
-   "link_count": 0,
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Waiter Call",
+   "label": "🔔 نداءات النادل - Waiter Calls",
    "link_count": 0,
    "link_to": "Waiter Call",
    "link_type": "DocType",
@@ -142,16 +119,121 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Settings",
+   "label": "🪑 إدارة الطاولات - Table Management",
    "link_count": 0,
    "link_type": "DocType",
    "onboard": 0,
    "type": "Card Break"
   },
   {
+   "description": "طاولات المطعم",
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Restaurant Settings",
+   "label": "🪑 الطاولات - Restaurant Tables",
+   "link_count": 0,
+   "link_to": "Restaurant Table",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "description": "جلسات الطاولات",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "⏱️ جلسات الطاولات - Table Sessions",
+   "link_count": 0,
+   "link_to": "Table Session",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "🍔 إدارة القائمة - Menu Management",
+   "link_count": 0,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "description": "أصناف القائمة",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "🍕 الأصناف - Menu Items",
+   "link_count": 0,
+   "link_to": "Menu Item",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "description": "تصنيفات القائمة",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "📂 التصنيفات - Menu Categories",
+   "link_count": 0,
+   "link_to": "Menu Category",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "description": "إضافات الأصناف",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "➕ الإضافات - Modifiers",
+   "link_count": 0,
+   "link_to": "Menu Item Modifier",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "👨‍🍳 إدارة المطبخ - Kitchen Management",
+   "link_count": 0,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "description": "محطات المطبخ",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "🏭 محطات المطبخ - Kitchen Stations",
+   "link_count": 0,
+   "link_to": "Kitchen Station",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "description": "طابعات نقطة البيع",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "🖨️ الطابعات - POS Printers",
+   "link_count": 0,
+   "link_to": "POS Printer",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "⚙️ الإعدادات - Settings",
+   "link_count": 0,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "description": "إعدادات النظام",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "⚙️ إعدادات المطعم - Restaurant Settings",
    "link_count": 0,
    "link_to": "Restaurant Settings",
    "link_type": "DocType",
@@ -159,7 +241,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-01-03 00:00:00.000000",
+ "modified": "2026-01-03 22:00:00.000000",
  "modified_by": "Administrator",
  "module": "Restaurant Pos",
  "name": "Restaurant POS",
@@ -171,21 +253,45 @@
  "sequence_id": 0.0,
  "shortcuts": [
   {
+   "color": "Green",
+   "label": "POS Cashier",
+   "link_to": "pos-cashier",
+   "type": "Page"
+  },
+  {
    "color": "Blue",
+   "label": "Waiter POS",
+   "link_to": "waiter-pos",
+   "type": "Page"
+  },
+  {
+   "color": "Red",
+   "label": "Kitchen Display",
+   "link_to": "/kitchen",
+   "type": "URL"
+  },
+  {
+   "color": "Cyan",
+   "label": "Digital Menu",
+   "link_to": "/menu",
+   "type": "URL"
+  },
+  {
+   "color": "Orange",
    "doc_view": "List",
    "label": "Restaurant Order",
    "link_to": "Restaurant Order",
    "type": "DocType"
   },
   {
-   "color": "Green",
+   "color": "Yellow",
    "doc_view": "List",
    "label": "Restaurant Table",
    "link_to": "Restaurant Table",
    "type": "DocType"
   },
   {
-   "color": "Orange",
+   "color": "Purple",
    "doc_view": "List",
    "label": "Menu Item",
    "link_to": "Menu Item",

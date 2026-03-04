@@ -9,14 +9,21 @@ import frappe
 from frappe import _
 
 
-def has_restaurant_permission(doctype, doc=None, ptype="read", user=None):
-    """Check restaurant-specific permissions"""
+def has_restaurant_permission(doc, ptype="read", user=None, debug=False):
+    """Check restaurant-specific permissions
+    
+    This function is called by Frappe's permission system via has_permission hook.
+    Signature must be: has_permission(doc, ptype, user)
+    """
     if not user:
         user = frappe.session.user
     
     # Admins have full access
     if "System Manager" in frappe.get_roles(user) or "Restaurant Manager" in frappe.get_roles(user):
         return True
+    
+    # Get doctype from doc
+    doctype = doc.doctype if doc else None
     
     # Check role-based permissions
     user_roles = frappe.get_roles(user)

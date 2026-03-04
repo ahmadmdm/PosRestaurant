@@ -40,7 +40,7 @@ def get_menu(table_code=None, branch=None, language="ar"):
         categories = frappe.get_all(
             "Menu Category",
             filters={
-                "enabled": 1,
+                "is_active": 1,
                 "branch": ["in", [branch, None, ""]] if branch else None
             },
             fields=[
@@ -76,11 +76,11 @@ def get_menu(table_code=None, branch=None, language="ar"):
                 "currency_symbol": get_currency_symbol(),
                 "categories": menu_data,
                 "settings": {
-                    "enable_call_waiter": settings.enable_call_waiter,
-                    "enable_online_payment": settings.enable_online_payment if hasattr(settings, 'enable_online_payment') else 0,
-                    "min_order_amount": settings.min_order_amount if hasattr(settings, 'min_order_amount') else 0,
-                    "service_charge_percent": settings.service_charge_percent if hasattr(settings, 'service_charge_percent') else 0,
-                    "vat_percent": settings.vat_percent if hasattr(settings, 'vat_percent') else 15,
+                    "enable_call_waiter": getattr(settings, "enable_waiter_calls", False),
+                    "enable_online_payment": getattr(settings, "enable_online_payment", 0),
+                    "min_order_amount": getattr(settings, "min_order_amount", 0),
+                    "service_charge_percent": getattr(settings, "service_charge_percent", 0),
+                    "vat_percent": getattr(settings, "vat_percent", 15),
                 }
             }
         }
@@ -104,8 +104,8 @@ def get_table_by_code(table_code):
 def get_category_items(category, branch=None, language="ar"):
     """Get menu items for a category"""
     filters = {
-        "enabled": 1,
-        "menu_category": category
+        "is_active": 1,
+        "category": category
     }
     
     if branch:
@@ -117,10 +117,10 @@ def get_category_items(category, branch=None, language="ar"):
         fields=[
             "name", "item_code", "item_name", "item_name_ar",
             "description", "description_ar", "image",
-            "price", "discounted_price", "is_available",
-            "preparation_time_minutes", "calories",
-            "is_vegetarian", "is_vegan", "is_spicy", "spice_level",
-            "display_order", "item_group"
+            "price", "discounted_price", "is_sold_out",
+            "preparation_time", "calories",
+            "spicy_level",
+            "display_order", "allow_customization"
         ],
         order_by="display_order asc"
     )
@@ -128,10 +128,13 @@ def get_category_items(category, branch=None, language="ar"):
     result = []
     for item in items:
         # Check real-time availability
-        is_available = check_item_availability(item.item_code, branch)
+        is_available = not item.is_sold_out and check_item_availability(item.item_code, branch)
         
         # Get item modifiers
-        modifiers = get_item_modifiers(item.name)
+        modifiers = get_item_modifiers(item.name) if item.allow_customization else []
+        
+        # Get dietary tags from child table
+        dietary_tags = get_item_dietary_tags(item.name)
         
         result.append({
             "name": item.name,
@@ -142,18 +145,33 @@ def get_category_items(category, branch=None, language="ar"):
             "price": flt(item.price),
             "discounted_price": flt(item.discounted_price) if item.discounted_price else None,
             "is_available": is_available,
-            "preparation_time": item.preparation_time_minutes,
+            "preparation_time": item.preparation_time,
             "calories": item.calories,
             "tags": {
-                "vegetarian": item.is_vegetarian,
-                "vegan": item.is_vegan,
-                "spicy": item.is_spicy,
-                "spice_level": item.spice_level
+                "vegetarian": "vegetarian" in dietary_tags,
+                "vegan": "vegan" in dietary_tags,
+                "spicy": item.spicy_level and item.spicy_level not in ["None", "0", ""],
+                "spice_level": item.spicy_level
             },
-            "modifiers": modifiers
+            "modifiers": modifiers,
+            "allow_customization": item.allow_customization
         })
     
     return result
+
+
+def get_item_dietary_tags(item_name):
+    """Get dietary tags for a menu item from child table"""
+    try:
+        tags = frappe.get_all(
+            "Menu Item Tag",
+            filters={"parent": item_name, "parenttype": "Menu Item"},
+            fields=["tag"],
+            pluck="tag"
+        )
+        return [t.lower() for t in tags] if tags else []
+    except Exception:
+        return []
 
 
 def check_item_availability(item_code, branch=None):

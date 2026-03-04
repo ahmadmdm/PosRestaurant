@@ -1,0 +1,555 @@
+{% extends "templates/web.html" %}
+{% block title %}{{ _("POS Cashier") }}{% endblock %}
+
+{% block head_include %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/assets/restaurant_pos/css/cashier.css">
+{% endblock %}
+
+{% block page_content %}
+<div id="pos-cashier-app" data-branch="{{ branch or '' }}" dir="rtl">
+    <!-- Splash Screen -->
+    <div id="splash-screen" class="splash-screen">
+        <div class="splash-content">
+            <div class="loading-ring"></div>
+            <h2>{{ _("Loading POS...") }}</h2>
+        </div>
+    </div>
+    
+    <!-- Main POS Layout -->
+    <div class="pos-container">
+        <!-- Left Panel - Menu -->
+        <div class="pos-menu-panel">
+            <!-- Header -->
+            <div class="pos-header">
+                <div class="header-info">
+                    <h1 class="pos-title">
+                        <i class="fa fa-cash-register"></i>
+                        <span>{{ _("Restaurant POS") }}</span>
+                    </h1>
+                    <div class="cashier-info">
+                        <span class="cashier-name" id="cashier-name"></span>
+                        <span class="branch-name" id="branch-name"></span>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <div class="clock" id="pos-clock">00:00:00</div>
+                    <button class="btn-icon" id="btn-orders" title="{{ _('Pending Orders') }}">
+                        <i class="fa fa-list"></i>
+                        <span class="badge" id="pending-count">0</span>
+                    </button>
+                    <button class="btn-icon" id="btn-tables" title="{{ _('Tables') }}">
+                        <i class="fa fa-th-large"></i>
+                    </button>
+                    <button class="btn-icon" id="btn-settings" title="{{ _('Settings') }}">
+                        <i class="fa fa-cog"></i>
+                    </button>
+                    <button class="btn-icon btn-exit" id="btn-exit" title="{{ _('Exit') }}">
+                        <i class="fa fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Order Type Tabs -->
+            <div class="order-type-tabs">
+                <button class="tab-btn active" data-type="Dine In">
+                    <i class="fa fa-utensils"></i>
+                    <span>{{ _("Dine In") }}</span>
+                </button>
+                <button class="tab-btn" data-type="Takeaway">
+                    <i class="fa fa-shopping-bag"></i>
+                    <span>{{ _("Takeaway") }}</span>
+                </button>
+                <button class="tab-btn" data-type="Delivery">
+                    <i class="fa fa-motorcycle"></i>
+                    <span>{{ _("Delivery") }}</span>
+                </button>
+                <button class="tab-btn" data-type="Drive Through">
+                    <i class="fa fa-car"></i>
+                    <span>{{ _("Drive Through") }}</span>
+                </button>
+            </div>
+            
+            <!-- Search Bar -->
+            <div class="pos-search">
+                <i class="fa fa-search"></i>
+                <input type="text" id="search-input" placeholder="{{ _('Search items or scan barcode...') }}" autocomplete="off">
+                <button class="btn-clear" id="btn-clear-search">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+            
+            <!-- Categories -->
+            <div class="categories-bar" id="categories-bar">
+                <button class="category-btn active" data-category="all">
+                    <i class="fa fa-th"></i>
+                    <span>{{ _("All") }}</span>
+                </button>
+                <!-- Categories loaded dynamically -->
+            </div>
+            
+            <!-- Menu Items Grid -->
+            <div class="menu-items-container">
+                <div class="menu-items-grid" id="menu-items-grid">
+                    <!-- Items loaded dynamically -->
+                </div>
+                <div class="no-items" id="no-items" style="display:none;">
+                    <i class="fa fa-search"></i>
+                    <p>{{ _("No items found") }}</p>
+                </div>
+            </div>
+            
+            <!-- Numpad (for quick qty/price entry) -->
+            <div class="numpad-panel" id="numpad-panel" style="display:none;">
+                <div class="numpad-display">
+                    <span id="numpad-value">0</span>
+                </div>
+                <div class="numpad-grid">
+                    <button class="numpad-btn" data-val="7">7</button>
+                    <button class="numpad-btn" data-val="8">8</button>
+                    <button class="numpad-btn" data-val="9">9</button>
+                    <button class="numpad-btn numpad-action" data-action="clear">C</button>
+                    <button class="numpad-btn" data-val="4">4</button>
+                    <button class="numpad-btn" data-val="5">5</button>
+                    <button class="numpad-btn" data-val="6">6</button>
+                    <button class="numpad-btn numpad-action" data-action="backspace">
+                        <i class="fa fa-backspace"></i>
+                    </button>
+                    <button class="numpad-btn" data-val="1">1</button>
+                    <button class="numpad-btn" data-val="2">2</button>
+                    <button class="numpad-btn" data-val="3">3</button>
+                    <button class="numpad-btn numpad-action numpad-qty" data-action="qty">
+                        {{ _("QTY") }}
+                    </button>
+                    <button class="numpad-btn numpad-zero" data-val="0">0</button>
+                    <button class="numpad-btn" data-val=".">.</button>
+                    <button class="numpad-btn numpad-action numpad-enter" data-action="enter">
+                        <i class="fa fa-check"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Panel - Cart -->
+        <div class="pos-cart-panel">
+            <!-- Customer Info -->
+            <div class="customer-section">
+                <div class="customer-header">
+                    <h3>
+                        <i class="fa fa-user"></i>
+                        {{ _("Customer") }}
+                    </h3>
+                    <button class="btn-icon btn-sm" id="btn-add-customer" title="{{ _('Add Customer') }}">
+                        <i class="fa fa-plus"></i>
+                    </button>
+                </div>
+                <div class="customer-info" id="customer-info">
+                    <span class="placeholder">{{ _("Walk-in Customer") }}</span>
+                </div>
+                <!-- Table Selection for Dine In -->
+                <div class="table-selection" id="table-selection">
+                    <button class="btn-select-table" id="btn-select-table">
+                        <i class="fa fa-chair"></i>
+                        <span id="selected-table-text">{{ _("Select Table") }}</span>
+                    </button>
+                    <input type="number" id="guest-count" placeholder="{{ _('Guests') }}" min="1" value="1">
+                </div>
+            </div>
+            
+            <!-- Cart Items -->
+            <div class="cart-section">
+                <div class="cart-header">
+                    <h3>
+                        <i class="fa fa-shopping-cart"></i>
+                        {{ _("Current Order") }}
+                        <span class="item-count" id="cart-item-count">0</span>
+                    </h3>
+                    <button class="btn-icon btn-sm btn-danger" id="btn-clear-cart" title="{{ _('Clear Cart') }}">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </div>
+                
+                <div class="cart-items" id="cart-items">
+                    <div class="cart-empty" id="cart-empty">
+                        <i class="fa fa-shopping-basket"></i>
+                        <p>{{ _("Cart is empty") }}</p>
+                        <small>{{ _("Add items from the menu") }}</small>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Totals Section -->
+            <div class="totals-section">
+                <div class="total-row">
+                    <span>{{ _("Subtotal") }}</span>
+                    <span id="subtotal">0.00</span>
+                </div>
+                <div class="total-row discount-row" id="discount-row" style="display:none;">
+                    <span>{{ _("Discount") }}</span>
+                    <span id="discount-amount">-0.00</span>
+                </div>
+                <div class="total-row">
+                    <span>{{ _("Service") }} (<span id="service-percent">0</span>%)</span>
+                    <span id="service-charge">0.00</span>
+                </div>
+                <div class="total-row">
+                    <span>{{ _("VAT") }} (<span id="vat-percent">15</span>%)</span>
+                    <span id="vat-amount">0.00</span>
+                </div>
+                <div class="total-row total-grand">
+                    <span>{{ _("Total") }}</span>
+                    <span id="grand-total">0.00 <small id="currency">SAR</small></span>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <div class="secondary-actions">
+                    <button class="btn-action btn-secondary" id="btn-discount">
+                        <i class="fa fa-percent"></i>
+                        <span>{{ _("Discount") }}</span>
+                    </button>
+                    <button class="btn-action btn-secondary" id="btn-hold">
+                        <i class="fa fa-pause"></i>
+                        <span>{{ _("Hold") }}</span>
+                    </button>
+                    <button class="btn-action btn-secondary" id="btn-note">
+                        <i class="fa fa-sticky-note"></i>
+                        <span>{{ _("Note") }}</span>
+                    </button>
+                </div>
+                <div class="primary-actions">
+                    <button class="btn-action btn-send" id="btn-send-kitchen" disabled>
+                        <i class="fa fa-paper-plane"></i>
+                        <span>{{ _("Send to Kitchen") }}</span>
+                    </button>
+                    <button class="btn-action btn-pay" id="btn-pay" disabled>
+                        <i class="fa fa-credit-card"></i>
+                        <span>{{ _("Pay") }}</span>
+                        <span class="pay-amount" id="pay-amount">0.00</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modals -->
+    <!-- Item Modifier Modal -->
+    <div class="modal" id="modifier-modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modifier-item-name">{{ _("Customize Item") }}</h3>
+                <button class="btn-close" id="close-modifier-modal">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="modifier-options">
+                <!-- Modifiers loaded dynamically -->
+            </div>
+            <div class="modifier-footer">
+                <div class="qty-control">
+                    <button class="btn-qty" id="mod-qty-minus">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                    <span class="qty-value" id="mod-qty">1</span>
+                    <button class="btn-qty" id="mod-qty-plus">
+                        <i class="fa fa-plus"></i>
+                    </button>
+                </div>
+                <div class="special-note">
+                    <input type="text" id="item-note" placeholder="{{ _('Special instructions...') }}">
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel" id="cancel-modifier">{{ _("Cancel") }}</button>
+                <button class="btn-confirm" id="confirm-modifier">
+                    {{ _("Add to Order") }} - <span id="modifier-total">0.00</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Payment Modal -->
+    <div class="modal" id="payment-modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>{{ _("Payment") }}</h3>
+                <button class="btn-close" id="close-payment-modal">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body payment-body">
+                <div class="payment-left">
+                    <!-- Order Summary -->
+                    <div class="payment-summary">
+                        <h4>{{ _("Order Summary") }}</h4>
+                        <div class="summary-items" id="payment-items">
+                            <!-- Items listed here -->
+                        </div>
+                        <div class="summary-totals">
+                            <div class="summary-row">
+                                <span>{{ _("Subtotal") }}</span>
+                                <span id="pay-subtotal">0.00</span>
+                            </div>
+                            <div class="summary-row" id="pay-discount-row" style="display:none;">
+                                <span>{{ _("Discount") }}</span>
+                                <span id="pay-discount">-0.00</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>{{ _("Service Charge") }}</span>
+                                <span id="pay-service">0.00</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>{{ _("VAT") }}</span>
+                                <span id="pay-vat">0.00</span>
+                            </div>
+                            <div class="summary-row summary-total">
+                                <span>{{ _("Total Due") }}</span>
+                                <span id="pay-total">0.00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="payment-right">
+                    <!-- Payment Methods -->
+                    <div class="payment-methods">
+                        <h4>{{ _("Payment Method") }}</h4>
+                        <div class="method-buttons">
+                            <button class="method-btn active" data-method="Cash">
+                                <i class="fa fa-money-bill-wave"></i>
+                                <span>{{ _("Cash") }}</span>
+                            </button>
+                            <button class="method-btn" data-method="Card">
+                                <i class="fa fa-credit-card"></i>
+                                <span>{{ _("Card") }}</span>
+                            </button>
+                            <button class="method-btn" data-method="Mobile">
+                                <i class="fa fa-mobile-alt"></i>
+                                <span>{{ _("Mobile") }}</span>
+                            </button>
+                            <button class="method-btn" data-method="Split">
+                                <i class="fa fa-divide"></i>
+                                <span>{{ _("Split") }}</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Cash Payment -->
+                    <div class="cash-payment" id="cash-payment">
+                        <h4>{{ _("Amount Tendered") }}</h4>
+                        <div class="amount-display">
+                            <input type="text" id="tendered-amount" value="0.00" readonly>
+                        </div>
+                        <div class="quick-amounts">
+                            <button class="quick-btn" data-amount="exact">{{ _("Exact") }}</button>
+                            <button class="quick-btn" data-amount="50">50</button>
+                            <button class="quick-btn" data-amount="100">100</button>
+                            <button class="quick-btn" data-amount="200">200</button>
+                            <button class="quick-btn" data-amount="500">500</button>
+                        </div>
+                        <div class="payment-numpad">
+                            <button data-val="7">7</button>
+                            <button data-val="8">8</button>
+                            <button data-val="9">9</button>
+                            <button data-val="4">4</button>
+                            <button data-val="5">5</button>
+                            <button data-val="6">6</button>
+                            <button data-val="1">1</button>
+                            <button data-val="2">2</button>
+                            <button data-val="3">3</button>
+                            <button data-val="0">0</button>
+                            <button data-val=".">.</button>
+                            <button data-action="clear">C</button>
+                        </div>
+                        <div class="change-display" id="change-display" style="display:none;">
+                            <span class="change-label">{{ _("Change") }}</span>
+                            <span class="change-amount" id="change-amount">0.00</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Card Payment -->
+                    <div class="card-payment" id="card-payment" style="display:none;">
+                        <div class="card-message">
+                            <i class="fa fa-credit-card fa-3x"></i>
+                            <p>{{ _("Please swipe, insert, or tap card") }}</p>
+                            <input type="text" id="card-reference" placeholder="{{ _('Reference Number (optional)') }}">
+                        </div>
+                    </div>
+                    
+                    <!-- Print Receipt Option -->
+                    <div class="print-option">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="print-receipt" checked>
+                            <span>{{ _("Print Receipt") }}</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions payment-actions">
+                <button class="btn-cancel" id="cancel-payment">{{ _("Cancel") }}</button>
+                <button class="btn-confirm btn-complete-payment" id="complete-payment" disabled>
+                    <i class="fa fa-check"></i>
+                    {{ _("Complete Payment") }}
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Customer Modal -->
+    <div class="modal" id="customer-modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>{{ _("Customer Information") }}</h3>
+                <button class="btn-close" id="close-customer-modal">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>{{ _("Customer Name") }}</label>
+                    <input type="text" id="cust-name" placeholder="{{ _('Enter customer name') }}">
+                </div>
+                <div class="form-group">
+                    <label>{{ _("Phone Number") }}</label>
+                    <input type="tel" id="cust-phone" placeholder="{{ _('05xxxxxxxx') }}">
+                </div>
+                <div class="form-group" id="delivery-address-group" style="display:none;">
+                    <label>{{ _("Delivery Address") }}</label>
+                    <textarea id="cust-address" rows="3" placeholder="{{ _('Enter delivery address') }}"></textarea>
+                </div>
+                <div class="customer-search" id="customer-search">
+                    <h4>{{ _("Recent Customers") }}</h4>
+                    <div class="customer-list" id="recent-customers">
+                        <!-- Recent customers loaded here -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel" id="cancel-customer">{{ _("Cancel") }}</button>
+                <button class="btn-confirm" id="save-customer">{{ _("Save") }}</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Table Selection Modal -->
+    <div class="modal" id="table-modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>{{ _("Select Table") }}</h3>
+                <button class="btn-close" id="close-table-modal">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="table-legend">
+                    <span class="legend-item available">
+                        <span class="legend-dot"></span>{{ _("Available") }}
+                    </span>
+                    <span class="legend-item occupied">
+                        <span class="legend-dot"></span>{{ _("Occupied") }}
+                    </span>
+                    <span class="legend-item reserved">
+                        <span class="legend-dot"></span>{{ _("Reserved") }}
+                    </span>
+                </div>
+                <div class="tables-grid" id="tables-grid">
+                    <!-- Tables loaded dynamically -->
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel" id="cancel-table">{{ _("Cancel") }}</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Discount Modal -->
+    <div class="modal" id="discount-modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content modal-small">
+            <div class="modal-header">
+                <h3>{{ _("Apply Discount") }}</h3>
+                <button class="btn-close" id="close-discount-modal">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="discount-type-tabs">
+                    <button class="discount-tab active" data-type="percent">{{ _("Percentage") }}</button>
+                    <button class="discount-tab" data-type="fixed">{{ _("Fixed Amount") }}</button>
+                </div>
+                <div class="discount-input">
+                    <input type="number" id="discount-value" min="0" placeholder="0">
+                    <span class="discount-suffix" id="discount-suffix">%</span>
+                </div>
+                <div class="discount-reason">
+                    <input type="text" id="discount-reason" placeholder="{{ _('Reason (optional)') }}">
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel" id="remove-discount">{{ _("Remove") }}</button>
+                <button class="btn-confirm" id="apply-discount">{{ _("Apply") }}</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Pending Orders Panel -->
+    <div class="orders-panel" id="orders-panel">
+        <div class="panel-header">
+            <h3>
+                <i class="fa fa-list"></i>
+                {{ _("Pending Orders") }}
+            </h3>
+            <button class="btn-close" id="close-orders-panel">
+                <i class="fa fa-times"></i>
+            </button>
+        </div>
+        <div class="panel-tabs">
+            <button class="panel-tab active" data-status="all">{{ _("All") }}</button>
+            <button class="panel-tab" data-status="New">{{ _("New") }}</button>
+            <button class="panel-tab" data-status="Preparing">{{ _("Preparing") }}</button>
+            <button class="panel-tab" data-status="Ready">{{ _("Ready") }}</button>
+        </div>
+        <div class="orders-list" id="orders-list">
+            <!-- Orders loaded dynamically -->
+        </div>
+    </div>
+    
+    <!-- Held Orders Panel -->
+    <div class="held-panel" id="held-panel" style="display:none;">
+        <div class="panel-header">
+            <h3>
+                <i class="fa fa-pause"></i>
+                {{ _("Held Orders") }}
+            </h3>
+            <button class="btn-close" id="close-held-panel">
+                <i class="fa fa-times"></i>
+            </button>
+        </div>
+        <div class="held-list" id="held-list">
+            <!-- Held orders -->
+        </div>
+    </div>
+    
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toast-container"></div>
+</div>
+
+<!-- Audio -->
+<audio id="sound-success" preload="auto">
+    <source src="/assets/restaurant_pos/sounds/alert.mp3" type="audio/mpeg">
+</audio>
+<audio id="sound-error" preload="auto">
+    <source src="/assets/restaurant_pos/sounds/alert.mp3" type="audio/mpeg">
+</audio>
+<audio id="sound-new-order" preload="auto">
+    <source src="/assets/restaurant_pos/sounds/new-order.mp3" type="audio/mpeg">
+</audio>
+{% endblock %}
+
+{% block script %}
+<script src="/assets/restaurant_pos/js/cashier.js"></script>
+{% endblock %}

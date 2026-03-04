@@ -49,7 +49,7 @@ class DigitalMenu {
     
     async loadMenu() {
         const response = await frappe.call({
-            method: 'restaurant_pos.api.menu.get_menu',
+            method: 'restaurant_pos.restaurant_pos.api.menu.get_menu',
             args: {
                 table_id: this.tableId,
                 lang: this.lang
@@ -58,13 +58,22 @@ class DigitalMenu {
         
         if (response.message?.success) {
             const data = response.message.data;
-            this.menu = data.items;
-            this.categories = data.categories;
+            this.categories = data.categories || [];
+            // Flatten items from all categories
+            this.menu = [];
+            this.categories.forEach(cat => {
+                if (cat.items && cat.items.length > 0) {
+                    cat.items.forEach(item => {
+                        item.category = cat.name;
+                        this.menu.push(item);
+                    });
+                }
+            });
             this.currency = data.currency || 'SAR';
             
-            if (data.table_info) {
+            if (data.table) {
                 document.getElementById('table-info').textContent = 
-                    `Table ${data.table_info.table_number}`;
+                    `Table ${data.table.table_number}`;
             }
             
             this.renderCategories();
@@ -88,7 +97,7 @@ class DigitalMenu {
             const btn = document.createElement('button');
             btn.className = 'category-btn';
             btn.dataset.category = cat.name;
-            btn.textContent = this.lang === 'ar' && cat.name_ar ? cat.name_ar : cat.name;
+            btn.textContent = cat.title || cat.name;
             nav.appendChild(btn);
         });
     }
@@ -111,7 +120,7 @@ class DigitalMenu {
             
             const title = document.createElement('h2');
             title.className = 'category-title';
-            title.textContent = this.lang === 'ar' && category.name_ar ? category.name_ar : category.name;
+            title.textContent = category.title || category.name;
             section.appendChild(title);
             
             const grid = document.createElement('div');
@@ -223,7 +232,7 @@ class DigitalMenu {
         
         try {
             const response = await frappe.call({
-                method: 'restaurant_pos.api.menu.get_item_modifiers',
+                method: 'restaurant_pos.restaurant_pos.api.menu.get_item_modifiers',
                 args: { item_id: item.id }
             });
             
@@ -452,7 +461,7 @@ class DigitalMenu {
             }));
             
             const response = await frappe.call({
-                method: 'restaurant_pos.api.order.place_order',
+                method: 'restaurant_pos.restaurant_pos.api.order.place_order',
                 args: {
                     table_id: this.tableId,
                     items: JSON.stringify(orderItems),
@@ -513,7 +522,7 @@ class DigitalMenu {
         
         try {
             const response = await frappe.call({
-                method: 'restaurant_pos.api.table.call_waiter',
+                method: 'restaurant_pos.restaurant_pos.api.table.call_waiter',
                 args: {
                     table_id: this.tableId,
                     call_type: 'Assistance'

@@ -17,7 +17,7 @@ class KitchenOrder(Document):
     
     def update_order_status(self):
         """Update main restaurant order status based on KOT status"""
-        from restaurant_pos.api.kitchen import update_restaurant_order_status
+        from restaurant_pos.restaurant_pos.api.kitchen import update_restaurant_order_status
         update_restaurant_order_status(self.restaurant_order)
     
     def start_preparation(self):

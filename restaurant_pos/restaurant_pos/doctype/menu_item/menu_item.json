@@ -210,13 +210,13 @@
   },
   {
    "fieldname": "allergens",
-   "fieldtype": "Table MultiSelect",
+   "fieldtype": "Table",
    "label": "Allergens",
    "options": "Menu Item Allergen"
   },
   {
    "fieldname": "dietary_tags",
-   "fieldtype": "Table MultiSelect",
+   "fieldtype": "Table",
    "label": "Dietary Tags",
    "options": "Menu Item Tag"
   },

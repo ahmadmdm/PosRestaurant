@@ -45,6 +45,10 @@ website_route_rules = [
     {"from_route": "/kitchen/<branch>", "to_route": "kitchen"},
     # Order Status - /order-status/<order_id>
     {"from_route": "/order-status/<order_id>", "to_route": "order_status"},
+    # Main POS Cashier - /cashier
+    {"from_route": "/cashier", "to_route": "cashier"},
+    # Waiter POS - /waiter-pos
+    {"from_route": "/waiter-pos", "to_route": "waiter_pos"},
 ]
 
 

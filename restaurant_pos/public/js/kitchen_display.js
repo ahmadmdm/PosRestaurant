@@ -46,7 +46,7 @@ class KitchenDisplay {
     async loadOrders() {
         try {
             const response = await frappe.call({
-                method: 'restaurant_pos.api.kitchen.get_kitchen_orders',
+                method: 'restaurant_pos.restaurant_pos.api.kitchen.get_kitchen_orders',
                 args: {
                     station: this.station,
                     branch: this.branch
@@ -198,7 +198,7 @@ class KitchenDisplay {
     async updateOrderStatus(kotId, status) {
         try {
             const response = await frappe.call({
-                method: 'restaurant_pos.api.kitchen.update_order_status',
+                method: 'restaurant_pos.restaurant_pos.api.kitchen.update_order_status',
                 args: {
                     kot_id: kotId,
                     status: status
@@ -217,7 +217,7 @@ class KitchenDisplay {
     async bumpOrder(kotId) {
         try {
             const response = await frappe.call({
-                method: 'restaurant_pos.api.kitchen.bump_order',
+                method: 'restaurant_pos.restaurant_pos.api.kitchen.bump_order',
                 args: { kot_id: kotId }
             });
             
@@ -238,7 +238,7 @@ class KitchenDisplay {
         
         try {
             const response = await frappe.call({
-                method: 'restaurant_pos.api.kitchen.set_priority',
+                method: 'restaurant_pos.restaurant_pos.api.kitchen.set_priority',
                 args: {
                     kot_id: kotId,
                     priority: newPriority

@@ -63,6 +63,38 @@ def get_kitchen_orders(station=None, branch=None, status=None):
         if order.status == "Preparing" and order.started_at:
             elapsed_time = time_diff_in_seconds(now_datetime(), order.started_at)
         
+        # Process items with fallback for missing item_name
+        processed_items = []
+        for item in items:
+            item_name = item.item_name
+            item_name_ar = item.item_name_ar
+            
+            # Fallback: fetch from Menu Item if item_name is null
+            if not item_name and item.menu_item:
+                menu_item = frappe.db.get_value(
+                    "Menu Item", item.menu_item, 
+                    ["item_name", "item_name_ar"], 
+                    as_dict=True
+                )
+                if menu_item:
+                    item_name = menu_item.item_name
+                    item_name_ar = menu_item.item_name_ar
+                    # Update the record for future
+                    frappe.db.set_value("Kitchen Order Item", item.name, {
+                        "item_name": item_name,
+                        "item_name_ar": item_name_ar
+                    })
+            
+            processed_items.append({
+                "id": item.name,
+                "name": item_name or item.menu_item,
+                "name_ar": item_name_ar,
+                "qty": item.qty,
+                "modifiers": frappe.parse_json(item.modifiers) if item.modifiers else [],
+                "notes": item.special_instructions,
+                "status": item.status
+            })
+        
         result.append({
             "id": order.name,
             "order_id": order.restaurant_order,
@@ -75,15 +107,7 @@ def get_kitchen_orders(station=None, branch=None, status=None):
             "is_additional": order.is_additional,
             "elapsed_time": int(elapsed_time),
             "created_at": str(order.creation),
-            "items": [{
-                "id": item.name,
-                "name": item.item_name,
-                "name_ar": item.item_name_ar,
-                "qty": item.qty,
-                "modifiers": frappe.parse_json(item.modifiers) if item.modifiers else [],
-                "notes": item.special_instructions,
-                "status": item.status
-            } for item in items]
+            "items": processed_items
         })
     
     return {"success": True, "data": result}
