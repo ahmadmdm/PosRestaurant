@@ -371,7 +371,7 @@ def create_order(order_data):
                 branch = frappe.db.get_all("Branch", limit=1)[0].name
             except: pass
         order.branch = branch
-        order.status = "New"
+        order.status = "Draft"
         
         # Table info
         if order.order_type == "Dine In" and order_data.get("table"):
