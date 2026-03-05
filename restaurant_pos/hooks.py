@@ -145,15 +145,15 @@ permission_query_conditions = {
 # Guest APIs (No login required for QR ordering)
 website_guest_api = [
     "restaurant_pos.restaurant_pos.api.menu.get_menu",
-    "restaurant_pos.restaurant_pos.api.menu.get_menu_categories",
     "restaurant_pos.restaurant_pos.api.menu.get_item_details",
-    "restaurant_pos.restaurant_pos.api.menu.search_items",
+    "restaurant_pos.restaurant_pos.api.menu.search_menu",
     "restaurant_pos.restaurant_pos.api.order.place_order",
     "restaurant_pos.restaurant_pos.api.order.get_order_status",
-    "restaurant_pos.restaurant_pos.api.order.add_to_order",
+    "restaurant_pos.restaurant_pos.api.order.add_items_to_order",
     "restaurant_pos.restaurant_pos.api.table.get_table_session",
     "restaurant_pos.restaurant_pos.api.table.call_waiter",
-    "restaurant_pos.restaurant_pos.api.table.get_table_orders",
+    "restaurant_pos.restaurant_pos.api.table.request_bill",
+    "restaurant_pos.restaurant_pos.api.table.get_table_status",
 ]
 
 # Export Python type annotations

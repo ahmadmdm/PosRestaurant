@@ -85,7 +85,7 @@ def check_abandoned_carts():
             "status": "Active",
             "modified": ["<", threshold_time]
         },
-        fields=["name", "table"]
+        fields=["name", "restaurant_table"]
     )
     
     for session in stale_sessions:
@@ -93,7 +93,7 @@ def check_abandoned_carts():
         unpaid_orders = frappe.get_all(
             "Restaurant Order",
             filters={
-                "table": session.table,
+                "restaurant_table": session.restaurant_table,
                 "status": ["not in", ["Paid", "Cancelled"]],
                 "docstatus": 1
             }
@@ -107,7 +107,7 @@ def check_abandoned_carts():
             })
             
             # Free up table
-            frappe.db.set_value("Restaurant Table", session.table, {
+            frappe.db.set_value("Restaurant Table", session.restaurant_table, {
                 "status": "Available",
                 "current_guests": 0
             })
@@ -184,8 +184,7 @@ def generate_daily_report():
     orders = frappe.get_all(
         "Restaurant Order",
         filters={
-            "creation": [">=", yesterday],
-            "creation": ["<", today],
+            "creation": ["between", [yesterday, today]],
             "status": ["in", ["Paid", "Served"]]
         },
         fields=["name", "grand_total", "order_type", "items"]
@@ -261,8 +260,7 @@ def generate_weekly_report():
     orders = frappe.get_all(
         "Restaurant Order",
         filters={
-            "creation": [">=", week_start],
-            "creation": ["<", today],
+            "creation": ["between", [week_start, today]],
             "status": ["in", ["Paid", "Served"]]
         },
         fields=["name", "grand_total", "creation"]
@@ -287,8 +285,7 @@ def generate_monthly_report():
     orders = frappe.get_all(
         "Restaurant Order",
         filters={
-            "creation": [">=", prev_month_start],
-            "creation": ["<", month_start],
+            "creation": ["between", [prev_month_start, month_start]],
             "status": ["in", ["Paid", "Served"]]
         },
         fields=["name", "grand_total"]

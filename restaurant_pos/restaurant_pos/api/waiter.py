@@ -471,7 +471,7 @@ def get_ready_orders(branch=None):
         },
         fields=[
             "name", "restaurant_order", "table_number",
-            "kitchen_station", "completed_at"
+            "kitchen_station", "completed_at", "restaurant_table"
         ],
         order_by="completed_at asc"
     )

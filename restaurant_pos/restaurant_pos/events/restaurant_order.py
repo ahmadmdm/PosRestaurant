@@ -81,9 +81,9 @@ def create_kitchen_order(restaurant_order):
         kitchen_order.restaurant_order = restaurant_order.name
         kitchen_order.restaurant_table = restaurant_order.restaurant_table
         kitchen_order.order_type = restaurant_order.order_type
-        kitchen_order.station = station
+        kitchen_order.kitchen_station = station
         kitchen_order.priority = "Normal"
-        kitchen_order.status = "Pending"
+        kitchen_order.status = "New"
         
         for item in items:
             kitchen_order.append("items", {
@@ -167,12 +167,9 @@ def calculate_order_totals(doc):
     
     doc.subtotal = subtotal
     
-    # Use pre-calculated values or recalculate
+    # Recalculate totals
     discounted = subtotal - flt(doc.discount_amount or 0)
-    
-    # Grand total should use what's already set or calculate
-    if not doc.grand_total or doc.grand_total == 0:
-        doc.grand_total = discounted + flt(doc.tax_amount or 0) + flt(doc.service_charge or 0)
+    doc.grand_total = discounted + flt(doc.tax_amount or 0) + flt(doc.service_charge or 0)
 
 
 def send_new_order_notification(order):

@@ -695,9 +695,13 @@ def cancel_order(order_id, reason=""):
                 pi_doc.cancel()
         
         # Cancel Kitchen Orders
-        kots = frappe.get_all("Kitchen Order", filters={"restaurant_order": order.name, "docstatus": 1})
+        kots = frappe.get_all("Kitchen Order", filters={"restaurant_order": order.name, "docstatus": ["!=", 2]})
         for kot in kots:
-            frappe.get_doc("Kitchen Order", kot.name).cancel()
+            kot_doc = frappe.get_doc("Kitchen Order", kot.name)
+            if kot_doc.docstatus == 1:
+                kot_doc.cancel()
+            elif kot_doc.docstatus == 0:
+                kot_doc.delete()
             
         # Update order items and order status
         for item in order.items:

@@ -49,6 +49,20 @@ def place_order(table_code, items, customer_name=None, customer_phone=None,
         if not items:
             return {"success": False, "message": _("No items in order")}
         
+        # Limit number of items and quantities to prevent abuse
+        max_items = 50
+        max_qty_per_item = 100
+        if len(items) > max_items:
+            return {"success": False, "message": _("Too many items in order")}
+        
+        for item in items:
+            if cint(item.get("qty", 1)) > max_qty_per_item:
+                return {"success": False, "message": _("Quantity exceeds maximum allowed")}
+        
+        # Validate order type
+        if order_type not in ("Dine In", "Takeaway", "Delivery"):
+            return {"success": False, "message": _("Invalid order type")}
+        
         # Validate items and calculate totals
         validated_items, item_errors = validate_order_items(items, table.branch)
         
@@ -432,9 +446,14 @@ def add_items_to_order(order_id, items, language="ar"):
             })
         
         # Recalculate totals
-        order.subtotal = sum(item.amount for item in order.items)
-        order.service_charge = flt(order.subtotal * order.service_charge_percent / 100)
-        order.vat = flt((order.subtotal + order.service_charge) * order.vat_percent / 100)
+        settings = frappe.get_single("Restaurant Settings")
+        order.subtotal = sum(flt(item.amount) for item in order.items)
+        
+        service_percent = flt(getattr(settings, 'service_charge_percent', 0) or 0)
+        order.service_charge = flt(order.subtotal * service_percent / 100)
+        
+        vat_percent = flt(getattr(settings, 'vat_percent', 15) or 15)
+        order.vat = flt((order.subtotal + order.service_charge) * vat_percent / 100)
         order.grand_total = order.subtotal + order.service_charge + order.vat
         
         order.save(ignore_permissions=True)

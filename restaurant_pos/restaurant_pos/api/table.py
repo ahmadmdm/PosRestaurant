@@ -128,10 +128,10 @@ def call_waiter(table_code, reason=None):
         
         # Create waiter call record
         call = frappe.new_doc("Waiter Call")
-        call.table = table.name
+        call.restaurant_table = table.name
         call.table_number = table.table_number
         call.branch = table.branch
-        call.reason = reason
+        call.call_type = reason
         call.status = "Pending"
         call.called_at = now_datetime()
         call.insert(ignore_permissions=True)

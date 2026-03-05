@@ -227,12 +227,16 @@ def update_restaurant_order_status(order_name):
         # Determine order status
         statuses = [k.status for k in kots]
         
-        if all(s == "Ready" for s in statuses):
+        if all(s == "Served" for s in statuses):
+            new_status = "Served"
+        elif all(s == "Ready" for s in statuses):
             new_status = "Ready"
-        elif any(s == "Preparing" for s in statuses):
+        elif any(s in ("Preparing", "Ready") for s in statuses):
             new_status = "Preparing"
-        elif all(s == "New" for s in statuses):
+        elif all(s in ("New", "Pending") for s in statuses):
             new_status = "Confirmed"
+        elif all(s == "Cancelled" for s in statuses):
+            new_status = "Cancelled"
         else:
             new_status = "Preparing"
         
@@ -335,13 +339,8 @@ def recall_order(kot_id):
         
         kot.save(ignore_permissions=True)
         
-        # Update main order
-        frappe.db.set_value(
-            "Restaurant Order",
-            kot.restaurant_order,
-            "status",
-            "Ready"
-        )
+        # Update main order based on all KOT statuses
+        update_restaurant_order_status(kot.restaurant_order)
         
         frappe.db.commit()
         
@@ -424,19 +423,21 @@ def get_kitchen_stats(station=None, branch=None):
     from frappe.utils import add_days
     yesterday = add_days(now_datetime(), -1)
     
+    conditions = ["status = 'Ready'", "completed_at >= %s", "started_at IS NOT NULL", "completed_at IS NOT NULL"]
+    params = [yesterday]
+
+    if station:
+        conditions.append("kitchen_station = %s")
+        params.append(station)
+    if branch:
+        conditions.append("branch = %s")
+        params.append(branch)
+
     avg_time = frappe.db.sql("""
         SELECT AVG(TIMESTAMPDIFF(SECOND, started_at, completed_at)) as avg_time
         FROM `tabKitchen Order`
-        WHERE status = 'Ready'
-        AND completed_at >= %s
-        AND started_at IS NOT NULL
-        AND completed_at IS NOT NULL
-        {station_filter}
-        {branch_filter}
-    """.format(
-        station_filter=f"AND kitchen_station = '{station}'" if station else "",
-        branch_filter=f"AND branch = '{branch}'" if branch else ""
-    ), yesterday, as_dict=True)
+        WHERE {conditions}
+    """.format(conditions=" AND ".join(conditions)), params, as_dict=True)
     
     return {
         "success": True,

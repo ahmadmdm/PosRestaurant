@@ -79,7 +79,7 @@ def check_and_update_table_status(table_name):
     unpaid_orders = frappe.get_all(
         "Restaurant Order",
         filters={
-            "table": table_name,
+            "restaurant_table": table_name,
             "status": ["not in", ["Cancelled", "Paid"]],
             "docstatus": 1
         }
@@ -92,7 +92,7 @@ def check_and_update_table_status(table_name):
         # Close active session
         active_session = frappe.get_all(
             "Table Session",
-            filters={"table": table_name, "status": "Active"},
+            filters={"restaurant_table": table_name, "status": "Active"},
             limit=1
         )
         
