@@ -254,31 +254,36 @@
  "shortcuts": [
   {
    "color": "Green",
+   "icon": "payment",
    "label": "POS Cashier",
    "link_to": "pos-cashier",
    "type": "Page"
   },
   {
    "color": "Blue",
+   "icon": "support",
    "label": "Waiter POS",
    "link_to": "waiter-pos",
    "type": "Page"
   },
   {
    "color": "Red",
+   "icon": "dashboard",
    "label": "Kitchen Display",
-   "link_to": "/kitchen",
-   "type": "URL"
+   "type": "URL",
+   "url": "/kitchen"
   },
   {
    "color": "Cyan",
+   "icon": "website",
    "label": "Digital Menu",
-   "link_to": "/menu",
-   "type": "URL"
+   "type": "URL",
+   "url": "/menu"
   },
   {
    "color": "Orange",
    "doc_view": "List",
+   "icon": "list",
    "label": "Restaurant Order",
    "link_to": "Restaurant Order",
    "type": "DocType"
@@ -286,6 +291,7 @@
   {
    "color": "Yellow",
    "doc_view": "List",
+   "icon": "branch",
    "label": "Restaurant Table",
    "link_to": "Restaurant Table",
    "type": "DocType"
@@ -293,6 +299,7 @@
   {
    "color": "Purple",
    "doc_view": "List",
+   "icon": "stock",
    "label": "Menu Item",
    "link_to": "Menu Item",
    "type": "DocType"
@@ -300,6 +307,7 @@
   {
    "color": "Grey",
    "doc_view": "",
+   "icon": "setting",
    "label": "Settings",
    "link_to": "Restaurant Settings",
    "type": "DocType"

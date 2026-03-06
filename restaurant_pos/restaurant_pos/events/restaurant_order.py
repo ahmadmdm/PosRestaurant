@@ -83,7 +83,7 @@ def create_kitchen_order(restaurant_order):
         kitchen_order.order_type = restaurant_order.order_type
         kitchen_order.kitchen_station = station
         kitchen_order.priority = "Normal"
-        kitchen_order.status = "New"
+        kitchen_order.status = "Pending"
         
         for item in items:
             kitchen_order.append("items", {

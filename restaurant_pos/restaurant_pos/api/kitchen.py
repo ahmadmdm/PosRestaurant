@@ -32,7 +32,7 @@ def get_kitchen_orders(station=None, branch=None, status=None):
     if status:
         filters["status"] = status
     else:
-        filters["status"] = ["in", ["New", "Preparing"]]
+        filters["status"] = ["in", ["Pending", "Preparing", "Ready"]]
     
     orders = frappe.get_all(
         "Kitchen Order",
@@ -62,6 +62,8 @@ def get_kitchen_orders(station=None, branch=None, status=None):
         elapsed_time = 0
         if order.status == "Preparing" and order.started_at:
             elapsed_time = time_diff_in_seconds(now_datetime(), order.started_at)
+        elif order.status == "Pending":
+            elapsed_time = time_diff_in_seconds(now_datetime(), order.creation)
         
         # Process items with fallback for missing item_name
         processed_items = []
@@ -233,7 +235,7 @@ def update_restaurant_order_status(order_name):
             new_status = "Ready"
         elif any(s in ("Preparing", "Ready") for s in statuses):
             new_status = "Preparing"
-        elif all(s in ("New", "Pending") for s in statuses):
+        elif all(s == "Pending" for s in statuses):
             new_status = "Confirmed"
         elif all(s == "Cancelled" for s in statuses):
             new_status = "Cancelled"
@@ -415,7 +417,7 @@ def get_kitchen_stats(station=None, branch=None):
         filters["branch"] = branch
     
     # Count by status
-    new_count = frappe.db.count("Kitchen Order", {**filters, "status": "New"})
+    new_count = frappe.db.count("Kitchen Order", {**filters, "status": "Pending"})
     preparing_count = frappe.db.count("Kitchen Order", {**filters, "status": "Preparing"})
     ready_count = frappe.db.count("Kitchen Order", {**filters, "status": "Ready"})
     

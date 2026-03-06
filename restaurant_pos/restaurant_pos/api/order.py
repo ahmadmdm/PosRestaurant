@@ -82,7 +82,7 @@ def place_order(table_code, items, customer_name=None, customer_phone=None,
         
         # Create the order
         order = frappe.new_doc("Restaurant Order")
-        order.table = table.name
+        order.restaurant_table = table.name
         order.table_number = table.table_number
         order.branch = table.branch
         order.table_session = session
@@ -91,7 +91,7 @@ def place_order(table_code, items, customer_name=None, customer_phone=None,
         order.customer_phone = customer_phone
         order.notes = notes
         order.language = language
-        order.status = "New"
+        order.status = "Draft"
         
         # Financials
         order.subtotal = subtotal
@@ -145,7 +145,7 @@ def place_order(table_code, items, customer_name=None, customer_phone=None,
                 "table_number": table.table_number,
                 "estimated_time": max_prep_time,
                 "grand_total": grand_total,
-                "status": "New",
+                "status": "Draft",
                 "status_text": _("Order Received"),
                 "track_url": f"/order-status/{order.name}"
             }
@@ -174,7 +174,7 @@ def validate_order_items(items, branch=None):
             "Menu Item",
             menu_item_name,
             ["name", "item_code", "item_name", "item_name_ar", "price", 
-             "is_available", "enabled", "kitchen_station", "preparation_time_minutes"],
+             "is_active", "kitchen_station", "preparation_time"],
             as_dict=True
         )
         
@@ -182,7 +182,7 @@ def validate_order_items(items, branch=None):
             errors.append(f"Item not found: {menu_item_name}")
             continue
         
-        if not menu_item.enabled:
+        if not menu_item.is_active:
             errors.append(f"Item not available: {menu_item.item_name}")
             continue
         
@@ -214,7 +214,7 @@ def validate_order_items(items, branch=None):
             "modifiers": modifiers,
             "notes": item.get("notes", ""),
             "kitchen_station": menu_item.kitchen_station,
-            "preparation_time": menu_item.preparation_time_minutes or 10
+            "preparation_time": menu_item.preparation_time or 10
         })
     
     return validated, errors
@@ -225,7 +225,7 @@ def get_or_create_table_session(table, customer_name=None, customer_phone=None):
     # Check for active session
     existing = frappe.db.get_value(
         "Table Session",
-        {"table": table, "status": ["in", ["Active", "Ordering"]]},
+        {"restaurant_table": table, "status": ["in", ["Active", "Ordering"]]},
         "name"
     )
     
@@ -234,7 +234,7 @@ def get_or_create_table_session(table, customer_name=None, customer_phone=None):
     
     # Create new session
     session = frappe.new_doc("Table Session")
-    session.table = table
+    session.restaurant_table = table
     session.customer_name = customer_name
     session.customer_phone = customer_phone
     session.status = "Ordering"
@@ -262,12 +262,12 @@ def create_kitchen_orders(order):
     for station, items in station_items.items():
         kot = frappe.new_doc("Kitchen Order")
         kot.restaurant_order = order.name
-        kot.table = order.table
+        kot.restaurant_table = order.restaurant_table
         kot.table_number = order.table_number
         kot.branch = order.branch
         kot.kitchen_station = station
         kot.order_type = order.order_type
-        kot.status = "New"
+        kot.status = "Pending"
         kot.priority = "Normal"
         kot.notes = order.notes
         
@@ -387,7 +387,7 @@ def get_order_status(order_id):
 def get_status_text(status):
     """Get localized status text"""
     status_map = {
-        "New": _("Order Received"),
+        "Draft": _("Order Received"),
         "Pending": _("Pending"),
         "Confirmed": _("Confirmed"),
         "Preparing": _("Being Prepared"),
@@ -495,12 +495,12 @@ def create_kitchen_orders_for_items(order, new_items):
     for station, items in station_items.items():
         kot = frappe.new_doc("Kitchen Order")
         kot.restaurant_order = order.name
-        kot.table = order.table
+        kot.restaurant_table = order.restaurant_table
         kot.table_number = order.table_number
         kot.branch = order.branch
         kot.kitchen_station = station
         kot.order_type = order.order_type
-        kot.status = "New"
+        kot.status = "Pending"
         kot.priority = "Normal"
         kot.is_additional = 1
         

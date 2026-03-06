@@ -68,12 +68,14 @@
   {
    "fieldname": "started_at",
    "fieldtype": "Datetime",
-   "label": "Started At"
+   "label": "Started At",
+   "allow_on_submit": 1
   },
   {
    "fieldname": "completed_at",
    "fieldtype": "Datetime",
-   "label": "Completed At"
+   "label": "Completed At",
+   "allow_on_submit": 1
   },
   {
    "collapsible": 1,

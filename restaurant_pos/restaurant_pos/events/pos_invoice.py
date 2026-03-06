@@ -39,18 +39,18 @@ def update_restaurant_order_payment(invoice):
             })
             
             # Update table status if fully paid
-            if total_paid >= flt(order.grand_total) and order.table:
-                check_and_update_table_status(order.table)
+            if total_paid >= flt(order.grand_total) and order.restaurant_table:
+                check_and_update_table_status(order.restaurant_table)
             
             frappe.publish_realtime(
                 "restaurant_payment_update",
                 {
                     "order": order.name,
-                    "table": order.table,
+                    "table": order.restaurant_table,
                     "paid_amount": total_paid,
                     "status": "Paid" if total_paid >= flt(order.grand_total) else "Partial"
                 },
-                room=f"table_{order.table}" if order.table else None
+                room=f"table_{order.restaurant_table}" if order.restaurant_table else None
             )
     except Exception as e:
         frappe.log_error(f"Error updating restaurant order payment: {str(e)}")
@@ -99,5 +99,5 @@ def check_and_update_table_status(table_name):
         if active_session:
             frappe.db.set_value("Table Session", active_session[0].name, {
                 "status": "Closed",
-                "end_time": frappe.utils.now_datetime()
+                "ended_at": frappe.utils.now_datetime()
             })

@@ -35,7 +35,7 @@ def get_menu_categories():
 
 def get_menu_items_by_category(category=None):
     """Get menu items grouped by category"""
-    filters = {"is_available": 1}
+    filters = {"is_active": 1}
     if category:
         filters["category"] = category
     
@@ -190,7 +190,7 @@ def get_popular_items(limit=6):
     """Get popular menu items"""
     return frappe.get_all(
         "Menu Item",
-        filters={"is_available": 1, "is_popular": 1},
+        filters={"is_active": 1, "is_popular": 1},
         fields=["name", "item_name", "item_name_ar", "price", "image", "category"],
         order_by="display_order",
         limit=limit
@@ -201,7 +201,7 @@ def get_chef_specials(limit=4):
     """Get chef special items"""
     return frappe.get_all(
         "Menu Item",
-        filters={"is_available": 1, "is_chef_special": 1},
+        filters={"is_active": 1, "is_chef_special": 1},
         fields=["name", "item_name", "item_name_ar", "price", "image", "category", "description"],
         order_by="display_order",
         limit=limit

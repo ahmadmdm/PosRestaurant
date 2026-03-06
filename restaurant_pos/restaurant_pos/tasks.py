@@ -54,7 +54,7 @@ def check_stale_orders():
             "creation": ["<", threshold_time],
             "docstatus": 1
         },
-        fields=["name", "restaurant_order", "station", "creation"]
+        fields=["name", "restaurant_order", "kitchen_station", "creation"]
     )
     
     for order in stale_orders:
@@ -64,10 +64,10 @@ def check_stale_orders():
             {
                 "kitchen_order": order.name,
                 "restaurant_order": order.restaurant_order,
-                "station": order.station,
+                "station": order.kitchen_station,
                 "wait_time": int(time_diff_in_seconds(now_datetime(), get_datetime(order.creation)) / 60)
             },
-            room=f"kitchen_{order.station}"
+            room=f"kitchen_{order.kitchen_station}"
         )
 
 
@@ -103,13 +103,12 @@ def check_abandoned_carts():
             # Close abandoned session
             frappe.db.set_value("Table Session", session.name, {
                 "status": "Abandoned",
-                "end_time": now_datetime()
+                "ended_at": now_datetime()
             })
             
             # Free up table
             frappe.db.set_value("Restaurant Table", session.restaurant_table, {
-                "status": "Available",
-                "current_guests": 0
+                "status": "Available"
             })
 
 
@@ -124,8 +123,8 @@ def update_table_statistics():
         sessions_today = frappe.db.count(
             "Table Session",
             filters={
-                "table": table.name,
-                "start_time": [">=", today]
+                "restaurant_table": table.name,
+                "started_at": [">=", today]
             }
         )
         
@@ -133,17 +132,17 @@ def update_table_statistics():
         completed_sessions = frappe.get_all(
             "Table Session",
             filters={
-                "table": table.name,
+                "restaurant_table": table.name,
                 "status": "Closed",
-                "start_time": [">=", today]
+                "started_at": [">=", today]
             },
-            fields=["start_time", "end_time"]
+            fields=["started_at", "ended_at"]
         )
         
         total_duration = 0
         for session in completed_sessions:
-            if session.end_time and session.start_time:
-                duration = time_diff_in_seconds(session.end_time, session.start_time)
+            if session.ended_at and session.started_at:
+                duration = time_diff_in_seconds(session.ended_at, session.started_at)
                 total_duration += duration
         
         avg_duration = total_duration / len(completed_sessions) if completed_sessions else 0
@@ -164,14 +163,14 @@ def clean_expired_sessions():
         "Table Session",
         filters={
             "status": "Active",
-            "start_time": ["<", threshold]
+            "started_at": ["<", threshold]
         }
     )
     
     for session in expired_sessions:
         frappe.db.set_value("Table Session", session.name, {
             "status": "Expired",
-            "end_time": now_datetime()
+            "ended_at": now_datetime()
         })
 
 

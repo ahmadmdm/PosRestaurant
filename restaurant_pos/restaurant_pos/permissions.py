@@ -199,7 +199,7 @@ def get_kitchen_order_permission_query_conditions(user=None):
     if "Kitchen Staff" in roles:
         station = get_user_kitchen_station(user)
         if station:
-            return f"`tabKitchen Order`.station = {frappe.db.escape(station)}"
+            return f"`tabKitchen Order`.kitchen_station = {frappe.db.escape(station)}"
         return ""
     
     if "Waiter" in roles:

@@ -141,7 +141,7 @@ def format_time_elapsed(minutes):
 
 def get_available_menu_items(category=None, search=None, table=None):
     """Get available menu items with filters"""
-    filters = {"is_available": 1}
+    filters = {"is_active": 1}
     
     if category:
         filters["category"] = category
@@ -234,7 +234,7 @@ def send_order_notification(order_name, event_type):
     
     notification_data = {
         "order_name": order.name,
-        "table": order.table,
+        "table": order.restaurant_table,
         "status": order.status,
         "event_type": event_type
     }
@@ -256,11 +256,11 @@ def send_order_notification(order_name, event_type):
         )
     
     # Notify customer
-    if order.table:
+    if order.restaurant_table:
         frappe.publish_realtime(
             "restaurant_order_update",
             notification_data,
-            room=f"table_{order.table}"
+            room=f"table_{order.restaurant_table}"
         )
 
 

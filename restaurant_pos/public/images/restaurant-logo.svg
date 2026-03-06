@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192">
+  <defs>
+    <linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ef4444;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#dc2626;stop-opacity:1"/>
+    </linearGradient>
+  </defs>
+  <rect width="192" height="192" rx="40" fill="url(#rg)"/>
+  <!-- Fork -->
+  <g transform="translate(35, 30)" stroke="white" stroke-width="5" fill="none" stroke-linecap="round">
+    <line x1="20" y1="15" x2="20" y2="55"/>
+    <line x1="10" y1="15" x2="10" y2="40"/>
+    <line x1="30" y1="15" x2="30" y2="40"/>
+    <path d="M10 40 Q10 55 20 55"/>
+    <path d="M30 40 Q30 55 20 55"/>
+    <line x1="20" y1="55" x2="20" y2="120"/>
+  </g>
+  <!-- Knife -->
+  <g transform="translate(100, 30)" stroke="white" stroke-width="5" fill="none" stroke-linecap="round">
+    <path d="M25 15 L25 50 Q25 60 35 60 L35 60 Q45 60 45 50 L45 15" fill="rgba(255,255,255,0.2)"/>
+    <line x1="35" y1="60" x2="35" y2="120"/>
+  </g>
+  <!-- Plate -->
+  <ellipse cx="96" cy="148" rx="50" ry="12" fill="rgba(255,255,255,0.25)" stroke="white" stroke-width="3"/>
+</svg>

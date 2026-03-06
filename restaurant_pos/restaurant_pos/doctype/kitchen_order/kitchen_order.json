@@ -105,7 +105,8 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Priority",
-   "options": "Rush\nNormal\nLow"
+   "options": "Rush\nNormal\nLow",
+   "allow_on_submit": 1
   },
   {
    "default": "0",

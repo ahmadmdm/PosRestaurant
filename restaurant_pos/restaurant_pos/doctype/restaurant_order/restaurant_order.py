@@ -119,7 +119,7 @@ class RestaurantOrder(Document):
                 "order_type": self.order_type,
                 "branch": self.branch,
                 "kitchen_station": station,
-                "status": "New",
+                "status": "Pending",
                 "notes": self.special_instructions,
                 "items": []
             })

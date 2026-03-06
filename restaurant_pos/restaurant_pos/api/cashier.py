@@ -441,7 +441,7 @@ def get_or_create_table_session(table, customer_name=None, guest_count=1):
     # Check for existing open session
     existing = frappe.db.get_value(
         "Table Session",
-        {"table": table, "status": "Active"},
+        {"restaurant_table": table, "status": "Active"},
         "name"
     )
     
@@ -450,7 +450,7 @@ def get_or_create_table_session(table, customer_name=None, guest_count=1):
     
     # Create new session
     session = frappe.new_doc("Table Session")
-    session.table = table
+    session.restaurant_table = table
     session.customer_name = customer_name
     session.guest_count = cint(guest_count)
     session.status = "Active"
@@ -646,7 +646,7 @@ def get_pending_orders(branch=None, status=None):
     if status and status != "all":
         filters["status"] = status
     else:
-        filters["status"] = ["in", ["New", "Confirmed", "Preparing", "Ready"]]
+        filters["status"] = ["in", ["Draft", "Confirmed", "Preparing", "Ready"]]
     
     orders = frappe.get_all(
         "Restaurant Order",
@@ -734,7 +734,7 @@ def update_order_status(order_id, status):
         
         # Validate status transition
         valid_transitions = {
-            "New": ["Confirmed", "Cancelled"],
+            "Draft": ["Confirmed", "Cancelled"],
             "Confirmed": ["Preparing", "Cancelled"],
             "Preparing": ["Ready", "Cancelled"],
             "Ready": ["Served", "Cancelled"],
@@ -798,7 +798,7 @@ def get_waiter_data():
             "Restaurant Order",
             filters={
                 "branch": branch,
-                "status": ["in", ["New", "Confirmed", "Preparing", "Ready", "Served"]],
+                "status": ["in", ["Draft", "Confirmed", "Preparing", "Ready", "Served"]],
                 "docstatus": 1
             },
             fields=[
@@ -817,7 +817,7 @@ def get_waiter_data():
                 "status": "Pending"
             },
             fields=[
-                "name", "table", "table_number", "call_type", "creation", "message"
+                "name", "restaurant_table", "table_number", "call_type", "creation"
             ],
             order_by="creation asc"
         )

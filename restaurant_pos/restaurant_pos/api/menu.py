@@ -301,7 +301,7 @@ def get_item_details(item_name, language="ar"):
                 "price": flt(item.price),
                 "discounted_price": flt(item.discounted_price) if item.discounted_price else None,
                 "is_available": check_item_availability(item.item_code),
-                "preparation_time": item.preparation_time_minutes,
+                "preparation_time": item.preparation_time,
                 "calories": item.calories,
                 "allergens": item.allergens,
                 "nutritional_info": {
@@ -348,8 +348,7 @@ def get_related_items(category, exclude_item, language="ar", limit=4):
         filters={
             "menu_category": category,
             "name": ["!=", exclude_item],
-            "enabled": 1,
-            "is_available": 1
+            "is_active": 1
         },
         fields=[
             "name", "item_name", "item_name_ar", 
@@ -384,8 +383,7 @@ def search_menu(query, branch=None, language="ar"):
             return {"success": True, "data": []}
         
         filters = {
-            "enabled": 1,
-            "is_available": 1
+            "is_active": 1
         }
         
         if branch:

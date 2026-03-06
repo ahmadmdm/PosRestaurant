@@ -12,7 +12,7 @@ required_apps = ["frappe", "erpnext"]
 add_to_apps_screen = [
     {
         "name": "restaurant_pos",
-        "logo": "/assets/restaurant_pos/images/restaurant-logo.svg",
+        "logo": "/assets/restaurant_pos/images/restaurant-logo.png",
         "title": "Restaurant POS",
         "route": "/app/restaurant-settings",
     }
@@ -41,7 +41,8 @@ web_include_js = [
 website_route_rules = [
     # QR Menu Route - /menu/{table_code}
     {"from_route": "/menu/<table_code>", "to_route": "menu"},
-    # Kitchen Display - /kitchen/{branch}
+    # Kitchen Display - /kitchen or /kitchen/{branch}
+    {"from_route": "/kitchen", "to_route": "kitchen"},
     {"from_route": "/kitchen/<branch>", "to_route": "kitchen"},
     # Order Status - /order-status/<order_id>
     {"from_route": "/order-status/<order_id>", "to_route": "order_status"},

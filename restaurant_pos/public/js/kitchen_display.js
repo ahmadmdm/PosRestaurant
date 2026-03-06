@@ -80,7 +80,7 @@ class KitchenDisplay {
     }
     
     createOrderCard(order) {
-        const isNew = order.status === 'New';
+        const isNew = order.status === 'Pending';
         const isPreparing = order.status === 'Preparing';
         const isReady = order.status === 'Ready';
         const isRush = order.priority === 'Rush';
@@ -186,7 +186,7 @@ class KitchenDisplay {
     }
     
     updateStats() {
-        const newCount = this.orders.filter(o => o.status === 'New').length;
+        const newCount = this.orders.filter(o => o.status === 'Pending').length;
         const preparingCount = this.orders.filter(o => o.status === 'Preparing').length;
         const readyCount = this.orders.filter(o => o.status === 'Ready').length;
         
