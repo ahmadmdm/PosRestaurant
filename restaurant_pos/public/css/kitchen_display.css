@@ -523,3 +523,13 @@ html, body {
         page-break-inside: avoid;
     }
 }
+
+/* Fix Font Awesome icons: override Readex Pro global font from ramotion_theme.css */
+.fa,
+.fa::before,
+[class^="fa-"]::before,
+[class*=" fa-"]::before {
+    font-family: FontAwesome !important;
+    font-style: normal;
+    font-weight: normal;
+}
