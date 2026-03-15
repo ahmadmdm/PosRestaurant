@@ -509,11 +509,16 @@ def process_payment(order_id, payment_data):
         
         # Try to sync with ERPNext POS Invoice
         pos_invoice_name = None
+        zatca_qr = None
         try:
             pos_invoice_name = create_pos_invoice_for_order(order, payment_data)
+            # Fetch ZATCA QR from the newly created POS Invoice
+            if pos_invoice_name:
+                pi_meta = frappe.get_meta("POS Invoice")
+                if pi_meta.has_field("ksa_einv_qr"):
+                    zatca_qr = frappe.db.get_value("POS Invoice", pos_invoice_name, "ksa_einv_qr")
         except Exception as e:
             frappe.log_error(f"Failed to create POS Invoice: {str(e)}", "Restaurant POS Integration")
-            # Continue normally for the POS even if backend fails temporarily
             pass
 
         # Update order
@@ -543,6 +548,8 @@ def process_payment(order_id, payment_data):
             "success": True,
             "order_id": order.name,
             "change": change,
+            "pos_invoice": pos_invoice_name,
+            "zatca_qr": zatca_qr or "",
             "message": _("Payment processed successfully")
         }
         
@@ -551,31 +558,44 @@ def process_payment(order_id, payment_data):
         return {"success": False, "message": str(e)}
 
 
+def _ensure_b2c_customer(customer_name):
+    """Ensure the customer has custom_b2c = 1 for ZATCA B2C invoicing"""
+    try:
+        if customer_name and frappe.db.exists("Customer", customer_name):
+            meta = frappe.get_meta("Customer")
+            if meta.has_field("custom_b2c"):
+                current = frappe.db.get_value("Customer", customer_name, "custom_b2c")
+                if not current:
+                    frappe.db.set_value("Customer", customer_name, "custom_b2c", 1)
+                    frappe.db.commit()
+    except Exception:
+        pass
+
+
 def create_pos_invoice_for_order(order, payment_data):
-    """Create an ERPNext POS Invoice from Restaurant Order"""
+    """Create an ERPNext POS Invoice from Restaurant Order with ZATCA B2C support"""
     # Check if POS Invoice DocType exists
     if not frappe.db.exists("DocType", "POS Invoice"):
         return None
-        
+
     # Determine POS Profile
     company = frappe.defaults.get_user_default("company")
     pos_profile = frappe.db.get_value("POS Profile", {"user": frappe.session.user, "company": company})
     if not pos_profile:
         pos_profile = frappe.db.get_value("POS Profile", {"company": company})
-        
+
     if not pos_profile:
-        # Skip POS Invoice creation if no profile configured
         frappe.log_error("No POS Profile found", "Restaurant POS Integration")
         return None
-        
+
     profile_doc = frappe.get_cached_doc("POS Profile", pos_profile)
-    
+
     # Prepare POS Invoice Doc
     pi = frappe.new_doc("POS Invoice")
     pi.is_pos = 1
     pi.pos_profile = pos_profile
     pi.company = profile_doc.company
-    
+
     # Get customer - prefer order customer, then profile default, then walk-in
     customer = None
     if hasattr(order, "customer") and order.customer:
@@ -583,56 +603,75 @@ def create_pos_invoice_for_order(order, payment_data):
     elif profile_doc.customer:
         customer = profile_doc.customer
     else:
-        # Get default walk-in customer
         customer = frappe.db.get_value("Customer", {"customer_name": ["like", "%Walk%"]}, "name")
         if not customer:
             customer = frappe.db.get_value("Customer", {"disabled": 0}, "name")
-    
+
     pi.customer = customer
     pi.set_posting_time = 1
     pi.posting_date = nowdate()
     pi.posting_time = nowtime()
-    
+
+    # ZATCA B2C: ensure customer is flagged as B2C
+    _ensure_b2c_customer(customer)
+
+    # ZATCA B2C field on POS Invoice
+    pi_meta = frappe.get_meta("POS Invoice")
+    if pi_meta.has_field("custom_b2c"):
+        pi.custom_b2c = 1
+
     # Add items
     has_items = False
     for item in order.items:
         if item.status == "Cancelled":
             continue
-            
+
         menu_item = frappe.db.get_value("Menu Item", item.menu_item, ["linked_item", "item_name"], as_dict=True)
         item_code = None
-        
+
         if menu_item and menu_item.linked_item:
             item_code = menu_item.linked_item
         elif menu_item:
-            # Check if item exists by name
             if frappe.db.exists("Item", menu_item.item_name):
                 item_code = menu_item.item_name
-        
+
         if not item_code or not frappe.db.exists("Item", item_code):
             continue
-            
-        pi.append("items", {
+
+        item_row = {
             "item_code": item_code,
             "qty": item.qty,
             "rate": item.rate,
             "warehouse": profile_doc.warehouse,
-            "income_account": profile_doc.income_account if hasattr(profile_doc, "income_account") else None
-        })
+            "income_account": profile_doc.income_account if hasattr(profile_doc, "income_account") else None,
+        }
+
+        # ZATCA: set tax category to Standard on each item if custom field exists
+        item_meta = frappe.get_meta("POS Invoice Item")
+        if item_meta.has_field("custom_zatca_tax_category"):
+            item_row["custom_zatca_tax_category"] = "Standard"
+
+        pi.append("items", item_row)
         has_items = True
-        
+
     if not has_items:
-        # No valid items, skip POS Invoice
         return None
-        
+
     # Add payment
     pi.append("payments", {
         "mode_of_payment": payment_data.get("method", "Cash"),
         "amount": flt(payment_data.get("amount", order.grand_total))
     })
-    
+
     pi.insert()
     pi.submit()
+
+    # Reload to pick up ZATCA QR code generated on_submit
+    try:
+        pi.reload()
+    except Exception:
+        pass
+
     return pi.name
 
 

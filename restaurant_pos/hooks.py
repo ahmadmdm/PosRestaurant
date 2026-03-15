@@ -67,6 +67,7 @@ jinja = {
         "restaurant_pos.restaurant_pos.utils.jinja_methods.is_restaurant_open",
         "restaurant_pos.restaurant_pos.utils.jinja_methods.get_popular_items",
         "restaurant_pos.restaurant_pos.utils.jinja_methods.translate_text",
+        "restaurant_pos.restaurant_pos.utils.jinja_methods.get_zatca_qr",
     ]
 }
 

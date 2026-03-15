@@ -1061,8 +1061,8 @@
                         
                         closeAllModals();
                         
-                        // Show success modal with print options
-                        showSuccessModal(r.message.order_id, amount, r.message.change);
+                        // Show success modal with print options and ZATCA QR
+                        showSuccessModal(r.message.order_id, amount, r.message.change, r.message.zatca_qr);
                         
                         loadPendingOrders();
                     } else {
@@ -1416,11 +1416,22 @@
     }
     
     // Success Modal after payment
-    function showSuccessModal(orderId, paidAmount, change) {
+    function showSuccessModal(orderId, paidAmount, change, zatcaQr) {
         const modal = document.getElementById('success-modal');
         document.getElementById('success-order-id').textContent = orderId;
         document.getElementById('success-paid').textContent = formatCurrency(paidAmount);
         document.getElementById('success-change').textContent = formatCurrency(change);
+        
+        // Show ZATCA QR if available
+        const qrContainer = document.getElementById('zatca-qr-container');
+        const qrImg = document.getElementById('zatca-qr-img');
+        if (zatcaQr && qrContainer && qrImg) {
+            const src = zatcaQr.startsWith('data:image') ? zatcaQr : 'data:image/png;base64,' + zatcaQr;
+            qrImg.src = src;
+            qrContainer.style.display = 'block';
+        } else if (qrContainer) {
+            qrContainer.style.display = 'none';
+        }
         
         modal.style.display = 'flex';
         

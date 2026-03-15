@@ -237,3 +237,40 @@ def translate_text(text_en, text_ar, lang=None):
     if lang == "ar" and text_ar:
         return text_ar
     return text_en or ""
+
+
+def get_zatca_qr(order_doc):
+    """
+    Get the ZATCA QR code image tag for a Restaurant Order.
+    Fetches ksa_einv_qr from the linked POS Invoice, or the ksa_einv_qr
+    field on the order itself if present.
+    Returns an <img> HTML tag ready for embedding in the print format,
+    or an empty string if no QR is available.
+    """
+    try:
+        qr_value = None
+
+        # Try linked POS Invoice first
+        pos_invoice = getattr(order_doc, "pos_invoice", None)
+        if pos_invoice and frappe.db.exists("POS Invoice", pos_invoice):
+            pi_meta = frappe.get_meta("POS Invoice")
+            if pi_meta.has_field("ksa_einv_qr"):
+                qr_value = frappe.db.get_value("POS Invoice", pos_invoice, "ksa_einv_qr")
+
+        if not qr_value:
+            return ""
+
+        # ksa_einv_qr is stored as a base64 PNG data URL or raw base64
+        if qr_value.startswith("data:image"):
+            src = qr_value
+        else:
+            src = "data:image/png;base64," + qr_value
+
+        return (
+            '<div style="text-align:center;margin:10px 0;">'
+            '<p style="font-size:11px;margin-bottom:4px;">ZATCA QR / رمز الاستجابة السريعة لهيئة الزكاة</p>'
+            f'<img src="{src}" style="width:120px;height:120px;" alt="ZATCA QR">'
+            '</div>'
+        )
+    except Exception:
+        return ""
