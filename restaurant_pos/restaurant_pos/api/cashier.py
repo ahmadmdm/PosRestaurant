@@ -86,6 +86,7 @@ def void_order_item(order_id, item_row_name, reason):
     Requires reason for auditing and kitchen updates.
     """
     try:
+        frappe.flags.ignore_permissions = True
         order = frappe.get_doc("Restaurant Order", order_id)
         if order.payment_status == "Paid":
             return {"success": False, "message": _("Cannot void items on a paid order")}
@@ -431,8 +432,9 @@ def create_order(order_data):
         
         # Set cashier
         order.flags.cashier = frappe.session.user
+        order.flags.ignore_permissions = True
         
-        order.insert()
+        order.insert(ignore_permissions=True)
         order.submit()
         
         # Update table status
@@ -495,6 +497,7 @@ def process_payment(order_id, payment_data):
         if isinstance(payment_data, str):
             payment_data = json.loads(payment_data)
         
+        frappe.flags.ignore_permissions = True
         order = frappe.get_doc("Restaurant Order", order_id)
         
         if order.payment_status == "Paid":
@@ -698,6 +701,7 @@ def cancel_order(order_id, reason=""):
     If Paid, it checks if it can cancel the POS Invoice.
     """
     try:
+        frappe.flags.ignore_permissions = True
         order = frappe.get_doc("Restaurant Order", order_id)
         
         # Check permissions or role
@@ -746,6 +750,7 @@ def cancel_order(order_id, reason=""):
 def update_order_status(order_id, status):
     """Update order status"""
     try:
+        frappe.flags.ignore_permissions = True
         order = frappe.get_doc("Restaurant Order", order_id)
         
         # Validate status transition
@@ -973,6 +978,7 @@ def add_items_to_order(order_id, items):
         if isinstance(items, str):
             items = json.loads(items)
         
+        frappe.flags.ignore_permissions = True
         order = frappe.get_doc("Restaurant Order", order_id)
         
         if order.status in ["Paid", "Completed", "Cancelled"]:
@@ -1028,6 +1034,7 @@ def add_items_to_order(order_id, items):
 def get_order_details(order_id):
     """Get full order details"""
     try:
+        frappe.flags.ignore_permissions = True
         order = frappe.get_doc("Restaurant Order", order_id)
         
         items = []

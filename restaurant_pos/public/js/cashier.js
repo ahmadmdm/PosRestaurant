@@ -1015,9 +1015,9 @@
     }
     
     function updateChange() {
-        const tendered = parseFloat(document.getElementById('tendered-amount').value) || 0;
-        const total = POSState.paymentTotal || 0;
-        const change = tendered - total;
+        const tendered = Math.round((parseFloat(document.getElementById('tendered-amount').value) || 0) * 100) / 100;
+        const total = Math.round((POSState.paymentTotal || 0) * 100) / 100;
+        const change = Math.round((tendered - total) * 100) / 100;
         
         if (change >= 0 && tendered > 0) {
             document.getElementById('change-display').style.display = 'block';
@@ -1031,7 +1031,7 @@
     
     function completePayment() {
         const btn = document.getElementById('complete-payment');
-        const paymentMethod = document.querySelector('.payment-method.active')?.dataset.method || 'Cash';
+        const paymentMethod = document.querySelector('.method-btn.active')?.dataset.method || 'Cash';
         const amount = parseFloat(document.getElementById('tendered-amount').value) || 0;
         
         btn.disabled = true;

@@ -4,6 +4,7 @@
  "creation": "2026-01-01 00:00:00.000000",
  "doctype": "DocType",
  "engine": "InnoDB",
+ "is_submittable": 1,
  "field_order": [
   "naming_series",
   "restaurant_table",
@@ -351,12 +352,16 @@
    "report": 1,
    "role": "System Manager",
    "share": 1,
-   "write": 1
+   "write": 1,
+   "submit": 1,
+   "cancel": 1
   },
   {
+   "cancel": 1,
    "create": 1,
    "read": 1,
    "role": "Restaurant Manager",
+   "submit": 1,
    "write": 1
   },
   {
@@ -366,9 +371,11 @@
    "write": 1
   },
   {
+   "cancel": 1,
    "create": 1,
    "read": 1,
    "role": "Cashier",
+   "submit": 1,
    "write": 1
   }
  ],
