@@ -1426,7 +1426,14 @@
         const qrContainer = document.getElementById('zatca-qr-container');
         const qrImg = document.getElementById('zatca-qr-img');
         if (zatcaQr && qrContainer && qrImg) {
-            const src = zatcaQr.startsWith('data:image') ? zatcaQr : 'data:image/png;base64,' + zatcaQr;
+            let src;
+            if (zatcaQr.startsWith('data:image')) {
+                src = zatcaQr;
+            } else if (zatcaQr.startsWith('/') || zatcaQr.startsWith('http')) {
+                src = zatcaQr;  // Direct file URL from server
+            } else {
+                src = 'data:image/png;base64,' + zatcaQr;
+            }
             qrImg.src = src;
             qrContainer.style.display = 'block';
         } else if (qrContainer) {

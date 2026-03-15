@@ -13,13 +13,13 @@ from frappe.utils import flt
 def on_submit(doc, method):
     """Handle POS Invoice submission"""
     # Link to restaurant order if exists
-    if doc.custom_restaurant_order:
+    if doc.get("custom_restaurant_order"):
         update_restaurant_order_payment(doc)
 
 
 def on_cancel(doc, method):
     """Handle POS Invoice cancellation"""
-    if doc.custom_restaurant_order:
+    if doc.get("custom_restaurant_order"):
         revert_restaurant_order_payment(doc)
 
 

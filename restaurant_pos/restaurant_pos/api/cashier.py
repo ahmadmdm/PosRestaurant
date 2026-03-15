@@ -244,7 +244,7 @@ def get_item_modifiers(item_name):
 def get_tables(branch=None):
     """Get restaurant tables"""
     try:
-        filters = {"enabled": 1}
+        filters = {}
         
         # Check if branch field exists
         meta = frappe.get_meta("Restaurant Table")
@@ -559,17 +559,160 @@ def process_payment(order_id, payment_data):
 
 
 def _ensure_b2c_customer(customer_name):
-    """Ensure the customer has custom_b2c = 1 for ZATCA B2C invoicing"""
+    """Ensure the customer has custom_b2c = 1 and a Saudi address for ZATCA B2C invoicing."""
     try:
-        if customer_name and frappe.db.exists("Customer", customer_name):
-            meta = frappe.get_meta("Customer")
-            if meta.has_field("custom_b2c"):
-                current = frappe.db.get_value("Customer", customer_name, "custom_b2c")
-                if not current:
-                    frappe.db.set_value("Customer", customer_name, "custom_b2c", 1)
-                    frappe.db.commit()
-    except Exception:
-        pass
+        if not customer_name or not frappe.db.exists("Customer", customer_name):
+            return
+        meta = frappe.get_meta("Customer")
+        if meta.has_field("custom_b2c"):
+            current = frappe.db.get_value("Customer", customer_name, "custom_b2c")
+            if not current:
+                frappe.db.set_value("Customer", customer_name, "custom_b2c", 1)
+
+        # Ensure customer has a primary address (required by ZATCA customer_data)
+        primary_addr = frappe.db.get_value("Customer", customer_name, "customer_primary_address")
+        if not primary_addr:
+            # Check if any address already linked to this customer
+            linked = frappe.db.get_value(
+                "Dynamic Link",
+                {"link_doctype": "Customer", "link_name": customer_name, "parenttype": "Address"},
+                "parent"
+            )
+            if linked:
+                frappe.db.set_value("Customer", customer_name, "customer_primary_address", linked)
+            else:
+                # Create a generic Saudi address
+                addr = frappe.new_doc("Address")
+                addr.address_title = customer_name
+                addr.address_type = "Billing"
+                addr.address_line1 = "Riyadh"
+                addr.address_line2 = "Riyadh"
+                addr.custom_building_number = "1234"
+                addr.city = "Riyadh"
+                addr.state = "Riyadh"
+                addr.pincode = "11564"
+                addr.country = "Saudi Arabia"
+                addr.append("links", {
+                    "link_doctype": "Customer",
+                    "link_name": customer_name,
+                })
+                addr.flags.ignore_permissions = True
+                addr.insert()
+                frappe.db.set_value("Customer", customer_name, "customer_primary_address", addr.name)
+        frappe.db.commit()
+    except Exception as e:
+        frappe.log_error(f"_ensure_b2c_customer({customer_name}): {e}", "Restaurant POS ZATCA")
+
+
+def _get_or_create_linked_item(menu_item_name):
+    """Get or auto-create an ERPNext Item for a Menu Item.
+    Returns the ERPNext item_code, or None if creation also fails.
+    """
+    try:
+        mi = frappe.db.get_value("Menu Item", menu_item_name,
+                                  ["linked_item", "item_name", "item_name_ar", "price"],
+                                  as_dict=True)
+        if not mi:
+            return None
+
+        # 1. Use existing linked_item if valid
+        if mi.linked_item and frappe.db.exists("Item", mi.linked_item):
+            return mi.linked_item
+
+        # 2. Check if an ERPNext Item already has name == menu_item_name
+        if frappe.db.exists("Item", menu_item_name):
+            frappe.db.set_value("Menu Item", menu_item_name, "linked_item", menu_item_name)
+            return menu_item_name
+
+        # 3. Try to find by item_name match
+        existing = frappe.db.get_value("Item", {"item_name": mi.item_name, "disabled": 0}, "name")
+        if existing:
+            frappe.db.set_value("Menu Item", menu_item_name, "linked_item", existing)
+            return existing
+
+        # 4. Auto-create the ERPNext item
+        item_group = frappe.db.get_value("Item Group", {"is_group": 0}, "name") or "All Item Groups"
+        new_item = frappe.new_doc("Item")
+        new_item.item_code = menu_item_name
+        new_item.item_name = mi.item_name or menu_item_name
+        new_item.item_group = item_group
+        new_item.is_stock_item = 0
+        new_item.is_sales_item = 1
+        new_item.standard_rate = flt(mi.price or 0)
+        new_item.description = mi.item_name_ar or mi.item_name or menu_item_name
+        new_item.flags.ignore_permissions = True
+        new_item.insert()
+        frappe.db.set_value("Menu Item", menu_item_name, "linked_item", new_item.name)
+        frappe.db.commit()
+        return new_item.name
+    except Exception as e:
+        frappe.log_error(f"_get_or_create_linked_item({menu_item_name}): {e}", "Restaurant POS Item Sync")
+        return None
+
+
+def _add_taxes_to_pos_invoice(pi, profile_doc):
+    """Add a VAT tax row to POS Invoice to satisfy ZATCA requirement.
+    Priority: POS Profile taxes_and_charges template → find 15% tax account for company.
+    """
+    try:
+        company = pi.company
+
+        # 1. Use POS Profile taxes_and_charges template if set
+        taxes_template = profile_doc.get("taxes_and_charges")
+        if taxes_template:
+            pi.taxes_and_charges = taxes_template
+            # Fetch template rows
+            template_rows = frappe.get_all(
+                "Sales Taxes and Charges",
+                filters={"parent": taxes_template},
+                fields=["charge_type", "account_head", "description", "rate", "included_in_print_rate"],
+                order_by="idx asc"
+            )
+            for row in template_rows:
+                pi.append("taxes", row)
+            return
+
+        # 2. Find a 15% VAT Sales Tax template for the company
+        vat15_template = frappe.db.get_value(
+            "Sales Taxes and Charges Template",
+            {"company": company, "name": ["like", "%15%"]},
+            "name"
+        )
+        if vat15_template:
+            pi.taxes_and_charges = vat15_template
+            template_rows = frappe.get_all(
+                "Sales Taxes and Charges",
+                filters={"parent": vat15_template},
+                fields=["charge_type", "account_head", "description", "rate", "included_in_print_rate"],
+                order_by="idx asc"
+            )
+            for row in template_rows:
+                pi.append("taxes", row)
+            return
+
+        # 3. Find a 15% Output/VAT tax account for the company directly
+        vat_account = frappe.db.get_value(
+            "Account",
+            {"company": company, "account_type": "Tax", "account_name": ["like", "%15%"]},
+            "name"
+        )
+        if not vat_account:
+            vat_account = frappe.db.get_value(
+                "Account",
+                {"company": company, "account_type": "Tax", "account_name": ["like", "%VAT%"]},
+                "name"
+            )
+
+        if vat_account:
+            pi.append("taxes", {
+                "charge_type": "On Net Total",
+                "account_head": vat_account,
+                "description": "VAT 15%",
+                "rate": 15,
+                "included_in_print_rate": 0,
+            })
+    except Exception as e:
+        frappe.log_error(f"_add_taxes_to_pos_invoice: {e}", "Restaurant POS Tax")
 
 
 def create_pos_invoice_for_order(order, payment_data):
@@ -578,11 +721,13 @@ def create_pos_invoice_for_order(order, payment_data):
     if not frappe.db.exists("DocType", "POS Invoice"):
         return None
 
-    # Determine POS Profile
-    company = frappe.defaults.get_user_default("company")
-    pos_profile = frappe.db.get_value("POS Profile", {"user": frappe.session.user, "company": company})
-    if not pos_profile:
+    # Determine POS Profile (POS Profile uses a child table 'POS Profile User', not a direct 'user' column)
+    company = frappe.defaults.get_user_default("company") or frappe.db.get_single_value("Global Defaults", "default_company")
+    pos_profile = frappe.db.get_value("POS Profile User", {"user": frappe.session.user}, "parent")
+    if not pos_profile and company:
         pos_profile = frappe.db.get_value("POS Profile", {"company": company})
+    if not pos_profile:
+        pos_profile = frappe.db.get_value("POS Profile", {})
 
     if not pos_profile:
         frappe.log_error("No POS Profile found", "Restaurant POS Integration")
@@ -619,23 +764,21 @@ def create_pos_invoice_for_order(order, payment_data):
     pi_meta = frappe.get_meta("POS Invoice")
     if pi_meta.has_field("custom_b2c"):
         pi.custom_b2c = 1
+    if pi_meta.has_field("custom_restaurant_order"):
+        pi.custom_restaurant_order = order.name
+    if pi_meta.has_field("custom_table") and order.get("restaurant_table"):
+        pi.custom_table = order.restaurant_table
 
     # Add items
     has_items = False
+    item_meta = frappe.get_meta("POS Invoice Item")
     for item in order.items:
         if item.status == "Cancelled":
             continue
 
-        menu_item = frappe.db.get_value("Menu Item", item.menu_item, ["linked_item", "item_name"], as_dict=True)
-        item_code = None
+        item_code = _get_or_create_linked_item(item.menu_item)
 
-        if menu_item and menu_item.linked_item:
-            item_code = menu_item.linked_item
-        elif menu_item:
-            if frappe.db.exists("Item", menu_item.item_name):
-                item_code = menu_item.item_name
-
-        if not item_code or not frappe.db.exists("Item", item_code):
+        if not item_code:
             continue
 
         item_row = {
@@ -643,11 +786,11 @@ def create_pos_invoice_for_order(order, payment_data):
             "qty": item.qty,
             "rate": item.rate,
             "warehouse": profile_doc.warehouse,
-            "income_account": profile_doc.income_account if hasattr(profile_doc, "income_account") else None,
         }
+        if profile_doc.get("income_account"):
+            item_row["income_account"] = profile_doc.income_account
 
         # ZATCA: set tax category to Standard on each item if custom field exists
-        item_meta = frappe.get_meta("POS Invoice Item")
         if item_meta.has_field("custom_zatca_tax_category"):
             item_row["custom_zatca_tax_category"] = "Standard"
 
@@ -656,6 +799,9 @@ def create_pos_invoice_for_order(order, payment_data):
 
     if not has_items:
         return None
+
+    # Add taxes to satisfy ZATCA requirement (must have at least one tax row)
+    _add_taxes_to_pos_invoice(pi, profile_doc)
 
     # Add payment
     pi.append("payments", {

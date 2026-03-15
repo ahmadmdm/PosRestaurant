@@ -260,8 +260,11 @@ def get_zatca_qr(order_doc):
         if not qr_value:
             return ""
 
-        # ksa_einv_qr is stored as a base64 PNG data URL or raw base64
+        # ksa_einv_qr can be a file URL (/private/files/...) or base64 data
         if qr_value.startswith("data:image"):
+            src = qr_value
+        elif qr_value.startswith("/") or qr_value.startswith("http"):
+            # It's a file URL — use directly as img src
             src = qr_value
         else:
             src = "data:image/png;base64," + qr_value
