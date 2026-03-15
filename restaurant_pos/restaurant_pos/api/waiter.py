@@ -333,6 +333,27 @@ def merge_tables(table_ids, primary_table):
             merged_numbers.append(num)
         
         frappe.db.commit()
+
+        # Notify kitchen about merged tables so KDS reflects the updated order
+        frappe.publish_realtime(
+            event="restaurant:tables_merged",
+            message={
+                "primary_order": primary.current_order,
+                "primary_table": primary.table_number,
+                "merged_tables": merged_numbers,
+            },
+            room=f"kitchen:{primary.branch}"
+        )
+        # Also notify waiters
+        frappe.publish_realtime(
+            event="restaurant:tables_merged",
+            message={
+                "primary_order": primary.current_order,
+                "primary_table": primary.table_number,
+                "merged_tables": merged_numbers,
+            },
+            room=f"waiters:{primary.branch}"
+        )
         
         return {
             "success": True,
@@ -530,6 +551,21 @@ def close_table(table_id):
     try:
         table = frappe.get_doc("Restaurant Table", table_id)
         
+        # Check for active kitchen orders before closing
+        if table.current_order:
+            open_kots = frappe.db.exists(
+                "Kitchen Order",
+                {
+                    "restaurant_order": table.current_order,
+                    "status": ["in", ["Pending", "Preparing"]]
+                }
+            )
+            if open_kots:
+                return {
+                    "success": False,
+                    "message": _("There are still items being prepared in the kitchen")
+                }
+
         # Check if order is paid
         if table.current_order:
             order = frappe.get_doc("Restaurant Order", table.current_order)

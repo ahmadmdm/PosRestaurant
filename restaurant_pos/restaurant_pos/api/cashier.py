@@ -342,14 +342,30 @@ def create_order(order_data):
         items = order_data.get("items", [])
         subtotal = sum(flt(item["total"]) for item in items)
         
-        # Discount
+        # Discount — validate against Restaurant Settings max_discount_percent
         discount = order_data.get("discount", {})
         discount_amount = 0
         if discount:
+            max_discount_pct = flt(getattr(settings, "max_discount_percent", 100) or 100)
+            requested_discount_pct = flt(discount.get("value", 0))
+
             if discount.get("type") == "percent":
-                discount_amount = flt(subtotal * flt(discount.get("value", 0)) / 100)
+                if requested_discount_pct > max_discount_pct:
+                    return {
+                        "success": False,
+                        "message": _("Discount {0}% exceeds maximum allowed {1}%").format(
+                            requested_discount_pct, max_discount_pct
+                        )
+                    }
+                discount_amount = flt(subtotal * requested_discount_pct / 100)
             else:
                 discount_amount = flt(discount.get("value", 0))
+                max_fixed = flt(subtotal * max_discount_pct / 100)
+                if discount_amount > max_fixed:
+                    return {
+                        "success": False,
+                        "message": _("Discount amount exceeds maximum allowed ({0}%)").format(max_discount_pct)
+                    }
         
         after_discount = subtotal - discount_amount
         

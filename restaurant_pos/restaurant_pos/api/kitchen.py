@@ -425,6 +425,7 @@ def get_kitchen_stats(station=None, branch=None):
     from frappe.utils import add_days
     yesterday = add_days(now_datetime(), -1)
     
+    # Build parameterized query — no string formatting of user-supplied values
     conditions = ["status = 'Ready'", "completed_at >= %s", "started_at IS NOT NULL", "completed_at IS NOT NULL"]
     params = [yesterday]
 
@@ -435,11 +436,14 @@ def get_kitchen_stats(station=None, branch=None):
         conditions.append("branch = %s")
         params.append(branch)
 
-    avg_time = frappe.db.sql("""
-        SELECT AVG(TIMESTAMPDIFF(SECOND, started_at, completed_at)) as avg_time
-        FROM `tabKitchen Order`
-        WHERE {conditions}
-    """.format(conditions=" AND ".join(conditions)), params, as_dict=True)
+    # Join safe hardcoded condition strings — values are always passed via params
+    where_clause = " AND ".join(conditions)
+    avg_time = frappe.db.sql(
+        f"SELECT AVG(TIMESTAMPDIFF(SECOND, started_at, completed_at)) as avg_time "
+        f"FROM `tabKitchen Order` WHERE {where_clause}",
+        params,
+        as_dict=True
+    )
     
     return {
         "success": True,
