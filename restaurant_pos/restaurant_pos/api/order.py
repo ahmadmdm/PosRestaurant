@@ -42,6 +42,12 @@ def place_order(table_code, items, customer_name=None, customer_phone=None,
         if not table:
             return {"success": False, "message": _("Invalid table")}
         
+        # Acquire per-table lock to prevent duplicate sessions from concurrent requests
+        lock_key = f"place_order:{table.name}"
+        lock_acquired = frappe.cache().set(lock_key, 1, ex=10, nx=True)
+        if not lock_acquired:
+            return {"success": False, "message": _("Another order is being placed. Please try again.")}
+        
         # Parse items if string
         if isinstance(items, str):
             items = json.loads(items)
@@ -152,6 +158,11 @@ def place_order(table_code, items, customer_name=None, customer_phone=None,
         }
         
     except Exception as e:
+        # Release lock on error
+        try:
+            frappe.cache().delete(lock_key)
+        except Exception:
+            pass
         frappe.log_error(f"Place Order Error: {str(e)}", "Restaurant POS")
         return {"success": False, "message": _("Error placing order. Please try again.")}
 
@@ -187,7 +198,7 @@ def validate_order_items(items, branch=None):
             continue
         
         # Check availability
-        from restaurant_pos.api.menu import check_item_availability
+        from restaurant_pos.restaurant_pos.api.menu import check_item_availability
         if not check_item_availability(menu_item.item_code, branch):
             errors.append(f"Item out of stock: {menu_item.item_name}")
             continue

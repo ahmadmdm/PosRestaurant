@@ -438,10 +438,10 @@ def create_order(order_data):
 
 def get_or_create_table_session(table, customer_name=None, guest_count=1):
     """Get existing table session or create new one"""
-    # Check for existing open session
+    # Check for existing open session (Active or Ordering)
     existing = frappe.db.get_value(
         "Table Session",
-        {"restaurant_table": table, "status": "Active"},
+        {"restaurant_table": table, "status": ["in", ["Active", "Ordering"]]},
         "name"
     )
     
@@ -455,7 +455,7 @@ def get_or_create_table_session(table, customer_name=None, guest_count=1):
     session.guest_count = cint(guest_count)
     session.status = "Active"
     session.started_at = now_datetime()
-    session.insert()
+    session.insert(ignore_permissions=True)
     
     # Update table with session
     frappe.db.set_value("Restaurant Table", table, "current_session", session.name)

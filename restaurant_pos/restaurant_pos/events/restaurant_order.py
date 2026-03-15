@@ -12,8 +12,10 @@ from frappe.utils import flt, now_datetime, cint
 
 def on_submit(doc, method):
     """Handle Restaurant Order submission"""
-    # Create kitchen order
-    create_kitchen_order(doc)
+    # Create kitchen order only if not already created via API (place_order flow)
+    existing_kot = frappe.db.exists("Kitchen Order", {"restaurant_order": doc.name})
+    if not existing_kot:
+        create_kitchen_order(doc)
     
     # Update table status
     if doc.restaurant_table:
