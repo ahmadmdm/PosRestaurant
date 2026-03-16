@@ -1,6 +1,6 @@
 {
  "charts": [],
- "content": "[{\"type\":\"header\",\"data\":{\"text\":\"🍽️ نظام إدارة المطعم - Restaurant POS\",\"col\":12}},{\"type\":\"spacer\",\"data\":{\"col\":12}},{\"type\":\"header\",\"data\":{\"text\":\"📊 لوحة التحكم السريعة\",\"col\":12}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"POS Cashier\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Waiter POS\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Kitchen Display\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Digital Menu\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Restaurant Order\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Restaurant Table\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Menu Item\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Settings\",\"col\":3}},{\"type\":\"spacer\",\"data\":{\"col\":12}},{\"type\":\"card\",\"data\":{\"card_name\":\"💰 نقاط البيع - POS Systems\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"🖥️ شاشات العرض - Display Screens\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"👨‍💼 إدارة الطلبات - Order Management\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"🪑 إدارة الطاولات - Table Management\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"🍔 إدارة القائمة - Menu Management\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"👨‍🍳 إدارة المطبخ - Kitchen Management\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"⚙️ الإعدادات - Settings\",\"col\":4}}]",
+ "content": "[{\"type\": \"header\", \"data\": {\"text\": \"\\ud83c\\udf7d\\ufe0f \\u0646\\u0638\\u0627\\u0645 \\u0625\\u062f\\u0627\\u0631\\u0629 \\u0627\\u0644\\u0645\\u0637\\u0639\\u0645 - Restaurant POS\", \"col\": 12}}, {\"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"type\": \"header\", \"data\": {\"text\": \"\\ud83d\\udcca \\u0644\\u0648\\u062d\\u0629 \\u0627\\u0644\\u062a\\u062d\\u0643\\u0645 \\u0627\\u0644\\u0633\\u0631\\u064a\\u0639\\u0629\", \"col\": 12}}, {\"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"POS Cashier\", \"col\": 3}}, {\"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Waiter POS\", \"col\": 3}}, {\"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Kitchen Display\", \"col\": 3}}, {\"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Digital Menu\", \"col\": 3}}, {\"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Restaurant Order\", \"col\": 3}}, {\"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Restaurant Table\", \"col\": 3}}, {\"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Menu Item\", \"col\": 3}}, {\"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Settings\", \"col\": 3}}, {\"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"type\": \"card\", \"data\": {\"card_name\": \"\\ud83d\\udcb0 \\u0646\\u0642\\u0627\\u0637 \\u0627\\u0644\\u0628\\u064a\\u0639 - POS Systems\", \"col\": 4}}, {\"type\": \"card\", \"data\": {\"card_name\": \"\\ud83d\\udda5\\ufe0f \\u0634\\u0627\\u0634\\u0627\\u062a \\u0627\\u0644\\u0639\\u0631\\u0636 - Display Screens\", \"col\": 4}}, {\"type\": \"card\", \"data\": {\"card_name\": \"\\ud83d\\udc68\\u200d\\ud83d\\udcbc \\u0625\\u062f\\u0627\\u0631\\u0629 \\u0627\\u0644\\u0637\\u0644\\u0628\\u0627\\u062a - Order Management\", \"col\": 4}}, {\"type\": \"card\", \"data\": {\"card_name\": \"\\ud83e\\ude91 \\u0625\\u062f\\u0627\\u0631\\u0629 \\u0627\\u0644\\u0637\\u0627\\u0648\\u0644\\u0627\\u062a - Table Management\", \"col\": 4}}, {\"type\": \"card\", \"data\": {\"card_name\": \"\\ud83c\\udf54 \\u0625\\u062f\\u0627\\u0631\\u0629 \\u0627\\u0644\\u0642\\u0627\\u0626\\u0645\\u0629 - Menu Management\", \"col\": 4}}, {\"type\": \"card\", \"data\": {\"card_name\": \"\\ud83d\\udc68\\u200d\\ud83c\\udf73 \\u0625\\u062f\\u0627\\u0631\\u0629 \\u0627\\u0644\\u0645\\u0637\\u0628\\u062e - Kitchen Management\", \"col\": 4}}, {\"type\": \"card\", \"data\": {\"card_name\": \"\\u2699\\ufe0f \\u0627\\u0644\\u0625\\u0639\\u062f\\u0627\\u062f\\u0627\\u062a - Settings\", \"col\": 4}}]",
  "creation": "2026-01-03 21:14:53.997937",
  "custom_blocks": [],
  "docstatus": 0,
@@ -15,17 +15,17 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "💰 نقاط البيع - POS Systems",
+   "label": "\ud83d\udcb0 \u0646\u0642\u0627\u0637 \u0627\u0644\u0628\u064a\u0639 - POS Systems",
    "link_count": 0,
    "link_type": "DocType",
    "onboard": 0,
    "type": "Card Break"
   },
   {
-   "description": "كاشير نقطة البيع الرئيسي",
+   "description": "\u0643\u0627\u0634\u064a\u0631 \u0646\u0642\u0637\u0629 \u0627\u0644\u0628\u064a\u0639 \u0627\u0644\u0631\u0626\u064a\u0633\u064a",
    "hidden": 0,
    "is_query_report": 0,
-   "label": "💵 الكاشير الرئيسي - POS Cashier",
+   "label": "\ud83d\udcb5 \u0627\u0644\u0643\u0627\u0634\u064a\u0631 \u0627\u0644\u0631\u0626\u064a\u0633\u064a - POS Cashier",
    "link_count": 0,
    "link_to": "pos-cashier",
    "link_type": "Page",
@@ -33,10 +33,10 @@
    "type": "Link"
   },
   {
-   "description": "نقطة بيع للنادلين",
+   "description": "\u0646\u0642\u0637\u0629 \u0628\u064a\u0639 \u0644\u0644\u0646\u0627\u062f\u0644\u064a\u0646",
    "hidden": 0,
    "is_query_report": 0,
-   "label": "🧑‍🍳 كاشير الويتر - Waiter POS",
+   "label": "\ud83e\uddd1\u200d\ud83c\udf73 \u0643\u0627\u0634\u064a\u0631 \u0627\u0644\u0648\u064a\u062a\u0631 - Waiter POS",
    "link_count": 0,
    "link_to": "waiter-pos",
    "link_type": "Page",
@@ -46,17 +46,17 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "🖥️ شاشات العرض - Display Screens",
+   "label": "\ud83d\udda5\ufe0f \u0634\u0627\u0634\u0627\u062a \u0627\u0644\u0639\u0631\u0636 - Display Screens",
    "link_count": 0,
    "link_type": "DocType",
    "onboard": 0,
    "type": "Card Break"
   },
   {
-   "description": "شاشة عرض المطبخ للطهاة",
+   "description": "\u0634\u0627\u0634\u0629 \u0639\u0631\u0636 \u0627\u0644\u0645\u0637\u0628\u062e \u0644\u0644\u0637\u0647\u0627\u0629",
    "hidden": 0,
    "is_query_report": 0,
-   "label": "🍳 شاشة المطبخ - Kitchen Display",
+   "label": "\ud83c\udf73 \u0634\u0627\u0634\u0629 \u0627\u0644\u0645\u0637\u0628\u062e - Kitchen Display",
    "link_count": 0,
    "link_to": "/kitchen",
    "link_type": "URL",
@@ -64,10 +64,10 @@
    "type": "Link"
   },
   {
-   "description": "القائمة الرقمية للزبائن",
+   "description": "\u0627\u0644\u0642\u0627\u0626\u0645\u0629 \u0627\u0644\u0631\u0642\u0645\u064a\u0629 \u0644\u0644\u0632\u0628\u0627\u0626\u0646",
    "hidden": 0,
    "is_query_report": 0,
-   "label": "📱 القائمة الرقمية - Digital Menu",
+   "label": "\ud83d\udcf1 \u0627\u0644\u0642\u0627\u0626\u0645\u0629 \u0627\u0644\u0631\u0642\u0645\u064a\u0629 - Digital Menu",
    "link_count": 0,
    "link_to": "/menu",
    "link_type": "URL",
@@ -77,17 +77,17 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "👨‍💼 إدارة الطلبات - Order Management",
+   "label": "\ud83d\udc68\u200d\ud83d\udcbc \u0625\u062f\u0627\u0631\u0629 \u0627\u0644\u0637\u0644\u0628\u0627\u062a - Order Management",
    "link_count": 0,
    "link_type": "DocType",
    "onboard": 0,
    "type": "Card Break"
   },
   {
-   "description": "جميع طلبات المطعم",
+   "description": "\u062c\u0645\u064a\u0639 \u0637\u0644\u0628\u0627\u062a \u0627\u0644\u0645\u0637\u0639\u0645",
    "hidden": 0,
    "is_query_report": 0,
-   "label": "📋 الطلبات - Restaurant Orders",
+   "label": "\ud83d\udccb \u0627\u0644\u0637\u0644\u0628\u0627\u062a - Restaurant Orders",
    "link_count": 0,
    "link_to": "Restaurant Order",
    "link_type": "DocType",
@@ -95,10 +95,10 @@
    "type": "Link"
   },
   {
-   "description": "طلبات المطبخ",
+   "description": "\u0637\u0644\u0628\u0627\u062a \u0627\u0644\u0645\u0637\u0628\u062e",
    "hidden": 0,
    "is_query_report": 0,
-   "label": "🎫 طلبات المطبخ - Kitchen Orders",
+   "label": "\ud83c\udfab \u0637\u0644\u0628\u0627\u062a \u0627\u0644\u0645\u0637\u0628\u062e - Kitchen Orders",
    "link_count": 0,
    "link_to": "Kitchen Order",
    "link_type": "DocType",
@@ -106,10 +106,10 @@
    "type": "Link"
   },
   {
-   "description": "طلبات النادل",
+   "description": "\u0637\u0644\u0628\u0627\u062a \u0627\u0644\u0646\u0627\u062f\u0644",
    "hidden": 0,
    "is_query_report": 0,
-   "label": "🔔 نداءات النادل - Waiter Calls",
+   "label": "\ud83d\udd14 \u0646\u062f\u0627\u0621\u0627\u062a \u0627\u0644\u0646\u0627\u062f\u0644 - Waiter Calls",
    "link_count": 0,
    "link_to": "Waiter Call",
    "link_type": "DocType",
@@ -119,17 +119,17 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "🪑 إدارة الطاولات - Table Management",
+   "label": "\ud83e\ude91 \u0625\u062f\u0627\u0631\u0629 \u0627\u0644\u0637\u0627\u0648\u0644\u0627\u062a - Table Management",
    "link_count": 0,
    "link_type": "DocType",
    "onboard": 0,
    "type": "Card Break"
   },
   {
-   "description": "طاولات المطعم",
+   "description": "\u0637\u0627\u0648\u0644\u0627\u062a \u0627\u0644\u0645\u0637\u0639\u0645",
    "hidden": 0,
    "is_query_report": 0,
-   "label": "🪑 الطاولات - Restaurant Tables",
+   "label": "\ud83e\ude91 \u0627\u0644\u0637\u0627\u0648\u0644\u0627\u062a - Restaurant Tables",
    "link_count": 0,
    "link_to": "Restaurant Table",
    "link_type": "DocType",
@@ -137,10 +137,10 @@
    "type": "Link"
   },
   {
-   "description": "جلسات الطاولات",
+   "description": "\u062c\u0644\u0633\u0627\u062a \u0627\u0644\u0637\u0627\u0648\u0644\u0627\u062a",
    "hidden": 0,
    "is_query_report": 0,
-   "label": "⏱️ جلسات الطاولات - Table Sessions",
+   "label": "\u23f1\ufe0f \u062c\u0644\u0633\u0627\u062a \u0627\u0644\u0637\u0627\u0648\u0644\u0627\u062a - Table Sessions",
    "link_count": 0,
    "link_to": "Table Session",
    "link_type": "DocType",
@@ -150,17 +150,17 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "🍔 إدارة القائمة - Menu Management",
+   "label": "\ud83c\udf54 \u0625\u062f\u0627\u0631\u0629 \u0627\u0644\u0642\u0627\u0626\u0645\u0629 - Menu Management",
    "link_count": 0,
    "link_type": "DocType",
    "onboard": 0,
    "type": "Card Break"
   },
   {
-   "description": "أصناف القائمة",
+   "description": "\u0623\u0635\u0646\u0627\u0641 \u0627\u0644\u0642\u0627\u0626\u0645\u0629",
    "hidden": 0,
    "is_query_report": 0,
-   "label": "🍕 الأصناف - Menu Items",
+   "label": "\ud83c\udf55 \u0627\u0644\u0623\u0635\u0646\u0627\u0641 - Menu Items",
    "link_count": 0,
    "link_to": "Menu Item",
    "link_type": "DocType",
@@ -168,10 +168,10 @@
    "type": "Link"
   },
   {
-   "description": "تصنيفات القائمة",
+   "description": "\u062a\u0635\u0646\u064a\u0641\u0627\u062a \u0627\u0644\u0642\u0627\u0626\u0645\u0629",
    "hidden": 0,
    "is_query_report": 0,
-   "label": "📂 التصنيفات - Menu Categories",
+   "label": "\ud83d\udcc2 \u0627\u0644\u062a\u0635\u0646\u064a\u0641\u0627\u062a - Menu Categories",
    "link_count": 0,
    "link_to": "Menu Category",
    "link_type": "DocType",
@@ -179,10 +179,10 @@
    "type": "Link"
   },
   {
-   "description": "إضافات الأصناف",
+   "description": "\u0625\u0636\u0627\u0641\u0627\u062a \u0627\u0644\u0623\u0635\u0646\u0627\u0641",
    "hidden": 0,
    "is_query_report": 0,
-   "label": "➕ الإضافات - Modifiers",
+   "label": "\u2795 \u0627\u0644\u0625\u0636\u0627\u0641\u0627\u062a - Modifiers",
    "link_count": 0,
    "link_to": "Menu Item Modifier",
    "link_type": "DocType",
@@ -192,17 +192,17 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "👨‍🍳 إدارة المطبخ - Kitchen Management",
+   "label": "\ud83d\udc68\u200d\ud83c\udf73 \u0625\u062f\u0627\u0631\u0629 \u0627\u0644\u0645\u0637\u0628\u062e - Kitchen Management",
    "link_count": 0,
    "link_type": "DocType",
    "onboard": 0,
    "type": "Card Break"
   },
   {
-   "description": "محطات المطبخ",
+   "description": "\u0645\u062d\u0637\u0627\u062a \u0627\u0644\u0645\u0637\u0628\u062e",
    "hidden": 0,
    "is_query_report": 0,
-   "label": "🏭 محطات المطبخ - Kitchen Stations",
+   "label": "\ud83c\udfed \u0645\u062d\u0637\u0627\u062a \u0627\u0644\u0645\u0637\u0628\u062e - Kitchen Stations",
    "link_count": 0,
    "link_to": "Kitchen Station",
    "link_type": "DocType",
@@ -210,10 +210,10 @@
    "type": "Link"
   },
   {
-   "description": "طابعات نقطة البيع",
+   "description": "\u0637\u0627\u0628\u0639\u0627\u062a \u0646\u0642\u0637\u0629 \u0627\u0644\u0628\u064a\u0639",
    "hidden": 0,
    "is_query_report": 0,
-   "label": "🖨️ الطابعات - POS Printers",
+   "label": "\ud83d\udda8\ufe0f \u0627\u0644\u0637\u0627\u0628\u0639\u0627\u062a - POS Printers",
    "link_count": 0,
    "link_to": "POS Printer",
    "link_type": "DocType",
@@ -223,17 +223,17 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "⚙️ الإعدادات - Settings",
+   "label": "\u2699\ufe0f \u0627\u0644\u0625\u0639\u062f\u0627\u062f\u0627\u062a - Settings",
    "link_count": 0,
    "link_type": "DocType",
    "onboard": 0,
    "type": "Card Break"
   },
   {
-   "description": "إعدادات النظام",
+   "description": "\u0625\u0639\u062f\u0627\u062f\u0627\u062a \u0627\u0644\u0646\u0638\u0627\u0645",
    "hidden": 0,
    "is_query_report": 0,
-   "label": "⚙️ إعدادات المطعم - Restaurant Settings",
+   "label": "\u2699\ufe0f \u0625\u0639\u062f\u0627\u062f\u0627\u062a \u0627\u0644\u0645\u0637\u0639\u0645 - Restaurant Settings",
    "link_count": 0,
    "link_to": "Restaurant Settings",
    "link_type": "DocType",
@@ -241,7 +241,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-01-03 22:00:00.000000",
+ "modified": "2026-03-16 02:20:12.299517",
  "modified_by": "Administrator",
  "module": "Restaurant Pos",
  "name": "Restaurant POS",
@@ -254,36 +254,33 @@
  "shortcuts": [
   {
    "color": "Green",
-   "icon": "payment",
    "label": "POS Cashier",
    "link_to": "pos-cashier",
    "type": "Page"
   },
   {
    "color": "Blue",
-   "icon": "support",
    "label": "Waiter POS",
    "link_to": "waiter-pos",
    "type": "Page"
   },
   {
    "color": "Red",
-   "icon": "dashboard",
    "label": "Kitchen Display",
+   "link_to": "",
    "type": "URL",
    "url": "/kitchen"
   },
   {
    "color": "Cyan",
-   "icon": "website",
    "label": "Digital Menu",
+   "link_to": "",
    "type": "URL",
    "url": "/menu"
   },
   {
    "color": "Orange",
    "doc_view": "List",
-   "icon": "list",
    "label": "Restaurant Order",
    "link_to": "Restaurant Order",
    "type": "DocType"
@@ -291,7 +288,6 @@
   {
    "color": "Yellow",
    "doc_view": "List",
-   "icon": "branch",
    "label": "Restaurant Table",
    "link_to": "Restaurant Table",
    "type": "DocType"
@@ -299,7 +295,6 @@
   {
    "color": "Purple",
    "doc_view": "List",
-   "icon": "stock",
    "label": "Menu Item",
    "link_to": "Menu Item",
    "type": "DocType"
@@ -307,7 +302,6 @@
   {
    "color": "Grey",
    "doc_view": "",
-   "icon": "setting",
    "label": "Settings",
    "link_to": "Restaurant Settings",
    "type": "DocType"
