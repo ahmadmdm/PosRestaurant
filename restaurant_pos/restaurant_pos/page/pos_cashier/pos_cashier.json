@@ -19,6 +19,9 @@
   },
   {
    "role": "POS User"
+  },
+  {
+   "role": "Cashier"
   }
  ],
  "standard": "Yes",

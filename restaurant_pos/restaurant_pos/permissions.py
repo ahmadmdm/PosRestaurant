@@ -37,6 +37,9 @@ def has_restaurant_permission(doc, ptype="read", user=None, debug=False):
     elif doctype == "Restaurant Table":
         return has_table_permission(doc, ptype, user, user_roles)
     
+    elif doctype == "Table Session":
+        return has_table_session_permission(doc, ptype, user, user_roles)
+    
     elif doctype == "Waiter Call":
         return has_waiter_call_permission(doc, ptype, user, user_roles)
     
@@ -104,6 +107,26 @@ def has_table_permission(doc, ptype, user, user_roles):
                 return False
         return True
     
+    return False
+
+
+def has_table_session_permission(doc, ptype, user, user_roles):
+    """Check permissions for Table Session"""
+    if ptype == "read":
+        return True
+
+    if "Waiter" in user_roles:
+        if ptype in ["write", "create"]:
+            if doc and doc.get("table"):
+                table = frappe.get_cached_doc("Restaurant Table", doc.get("table"))
+                user_areas = get_user_assigned_areas(user)
+                if user_areas and table.get("area") not in user_areas:
+                    return False
+            return True
+
+    if "Cashier" in user_roles:
+        return ptype in ["write", "create"]
+
     return False
 
 
@@ -205,6 +228,39 @@ def get_kitchen_order_permission_query_conditions(user=None):
     if "Waiter" in roles:
         return ""
     
+    return "1=0"
+
+
+def get_table_permission_query_conditions(user=None):
+    """Permission query for Restaurant Table"""
+    if not user:
+        user = frappe.session.user
+
+    roles = frappe.get_roles(user)
+
+    if "System Manager" in roles or "Restaurant Manager" in roles:
+        return ""
+
+    # All other valid roles can read all tables (area-based filtering done in has_permission)
+    if "Waiter" in roles or "Cashier" in roles or "Kitchen Staff" in roles:
+        return ""
+
+    return "1=0"
+
+
+def get_table_session_permission_query_conditions(user=None):
+    """Permission query for Table Session"""
+    if not user:
+        user = frappe.session.user
+
+    roles = frappe.get_roles(user)
+
+    if "System Manager" in roles or "Restaurant Manager" in roles:
+        return ""
+
+    if "Waiter" in roles or "Cashier" in roles:
+        return ""
+
     return "1=0"
 
 

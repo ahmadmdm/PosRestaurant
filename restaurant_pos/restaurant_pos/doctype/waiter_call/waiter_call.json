@@ -153,6 +153,14 @@
    "read": 1,
    "role": "Waiter",
    "write": 1
+  },
+  {
+   "role": "Cashier",
+   "read": 1
+  },
+  {
+   "role": "Kitchen Staff",
+   "read": 1
   }
  ],
  "sort_field": "creation",

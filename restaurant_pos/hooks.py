@@ -136,12 +136,17 @@ fixtures = [
 has_permission = {
     "Restaurant Order": "restaurant_pos.restaurant_pos.permissions.has_restaurant_permission",
     "Kitchen Order": "restaurant_pos.restaurant_pos.permissions.has_restaurant_permission",
+    "Restaurant Table": "restaurant_pos.restaurant_pos.permissions.has_restaurant_permission",
+    "Table Session": "restaurant_pos.restaurant_pos.permissions.has_restaurant_permission",
+    "Waiter Call": "restaurant_pos.restaurant_pos.permissions.has_restaurant_permission",
 }
 
 # Permission Query Conditions
 permission_query_conditions = {
     "Restaurant Order": "restaurant_pos.restaurant_pos.permissions.get_order_permission_query_conditions",
     "Kitchen Order": "restaurant_pos.restaurant_pos.permissions.get_kitchen_order_permission_query_conditions",
+    "Restaurant Table": "restaurant_pos.restaurant_pos.permissions.get_table_permission_query_conditions",
+    "Table Session": "restaurant_pos.restaurant_pos.permissions.get_table_session_permission_query_conditions",
 }
 
 # Guest APIs (No login required for QR ordering)

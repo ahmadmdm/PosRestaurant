@@ -204,6 +204,10 @@
   {
    "read": 1,
    "role": "Waiter"
+  },
+  {
+   "role": "Cashier",
+   "read": 1
   }
  ],
  "search_fields": "restaurant_order, table_number, status",

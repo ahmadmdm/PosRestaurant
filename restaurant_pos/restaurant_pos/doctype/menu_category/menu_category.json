@@ -152,6 +152,14 @@
    "read": 1,
    "role": "Restaurant Manager",
    "write": 1
+  },
+  {
+   "role": "Waiter",
+   "read": 1
+  },
+  {
+   "role": "Kitchen Staff",
+   "read": 1
   }
  ],
  "show_title_field_in_link": 1,

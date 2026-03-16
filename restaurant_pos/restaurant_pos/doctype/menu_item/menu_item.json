@@ -366,6 +366,10 @@
   {
    "read": 1,
    "role": "Kitchen Staff"
+  },
+  {
+   "role": "Waiter",
+   "read": 1
   }
  ],
  "search_fields": "item_name, item_name_ar, item_code",
